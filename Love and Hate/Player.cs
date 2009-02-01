@@ -201,5 +201,12 @@ namespace Love_and_Hate
 
             base.SetAssetName();
         }
+
+        public override void Initialize()
+        {
+            mPositionX = Config.Instance.GetAsInt("ScreenWidth") * 0.5f;
+            mPositionY = Config.Instance.GetAsInt("ScreenHeight") * 0.5f;
+            base.Initialize();
+        }
     }
 }
