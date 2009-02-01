@@ -108,7 +108,6 @@ namespace Love_and_Hate
         }
 
         AnimatedSprite m_idleFrontAnim;
-        AnimatedSprite m_idleSideAnim;
         AnimatedSprite m_runAnim;        
 
         private PlayerIndex m_id;
@@ -152,9 +151,34 @@ namespace Love_and_Hate
 
             int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
 
-            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0,0), 0, mScale.X, 0, "\\player\\IdleFront\\idlefront", 8, iPlayerFrameRate);
-            this.m_idleSideAnim = new AnimatedSprite(Game, new Vector2(0,0), 0, mScale.X, 0, "\\player\\IdleSide\\idleside", 8, iPlayerFrameRate);
-            this.m_runAnim = new AnimatedSprite(Game, new Vector2(0,0), 0, mScale.X, 0, "\\player\\RunLeft\\runleft", 8, iPlayerFrameRate);
+            switch (id)
+            {
+                case PlayerIndex.One:
+                    {
+                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player01\\idle\\p1_idle", 8, iPlayerFrameRate);
+                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player01\\run\\p1_run", 8, iPlayerFrameRate);
+                        break;
+                    }
+                case PlayerIndex.Two:
+                    {
+                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p2_idle", 8, iPlayerFrameRate);
+                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p2_run", 8, iPlayerFrameRate);
+                        break;
+                    }
+                case PlayerIndex.Three:
+                    {
+                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p3_idle", 8, iPlayerFrameRate);
+                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p3_run", 8, iPlayerFrameRate);
+                        break;
+                    }
+                case PlayerIndex.Four:
+                    {
+                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p4_idle", 8, iPlayerFrameRate);
+                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p4_run", 8, iPlayerFrameRate);
+                        break;
+                    }
+            }
+
         }
 
         public override void Draw(GameTime gameTime)
@@ -263,7 +287,6 @@ namespace Love_and_Hate
                         mBounds.Radius = Radius;
 
                         this.m_idleFrontAnim.Scale = mScale.X;
-                        this.m_idleSideAnim.Scale = mScale.X;
                         this.m_runAnim.Scale = mScale.X;
 
                         Program.Instance.mEnemiesKilled++;
@@ -549,7 +572,6 @@ namespace Love_and_Hate
             if (m_idleFrontAnim != null)
             {
                 this.m_idleFrontAnim.Scale = mScale.X;
-                this.m_idleSideAnim.Scale = mScale.X;
                 this.m_runAnim.Scale = mScale.X;
             }
             mMaxSpeed = 5000f / PixelWidth;
