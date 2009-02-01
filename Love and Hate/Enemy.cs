@@ -10,7 +10,6 @@ namespace Love_and_Hate
 {
     public class Enemy : Sprite
     {
-        BoundingSphere mBoundingSphere = new BoundingSphere();
         private float mMaxSpeed = 0f;
         private float mChaseStrength = 1000;
         private float mAvoidStrength = 2000;
@@ -168,7 +167,7 @@ namespace Love_and_Hate
             LHPlayer closest = null;
             float closestDistance = 0f;
 
-            foreach (LHPlayer player in Program.Instance.GamePlayers)
+            foreach (Player player in Program.Instance.GamePlayers)
             {
                 if (player.PixelWidth < PixelWidth)
                 {
@@ -198,7 +197,7 @@ namespace Love_and_Hate
             LHPlayer closest = null;
             float closestDistance = 0f;
 
-            foreach (LHPlayer player in Program.Instance.GamePlayers)
+            foreach (Player player in Program.Instance.GamePlayers)
             {
                 if (player.PixelWidth > PixelWidth)
                 {

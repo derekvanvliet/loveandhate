@@ -39,9 +39,9 @@ namespace Love_and_Hate
             Content.RootDirectory = "Content";
         }
 
-        private List<LHPlayer> m_GamePlayers;
+        private List<Player> m_GamePlayers;
 
-        public List<LHPlayer> GamePlayers
+        public List<Player> GamePlayers
         {
             get { return m_GamePlayers; }
         }
@@ -57,20 +57,20 @@ namespace Love_and_Hate
  			// TODO: Add your initialization logic here
             mGameState = GameState.Init;
 
-            m_GamePlayers = new List<LHPlayer>();
+            m_GamePlayers = new List<Player>();
 
             // Player one will always be added regardless of whether a controller is connected or not
             //
-            m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.One));
+            m_GamePlayers.Add(new Player(this, PlayerIndex.One));
             
-            if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
-                m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Two));
+            //if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
+                //m_GamePlayers.Add(new Player(this, PlayerIndex.Two));
             
-            if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
-                m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Three));
+            //if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
+              //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Three));
             
-            if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
-                m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Four));
+            //if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
+              //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Four));
            
             base.Initialize();
         }
