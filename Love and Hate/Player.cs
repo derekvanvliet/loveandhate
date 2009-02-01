@@ -152,9 +152,9 @@ namespace Love_and_Hate
 
             int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
 
-            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(mPositionX, mPositionY), 0, 0.2f, 0, "\\player\\IdleFront\\idlefront", 8, iPlayerFrameRate);
-            this.m_idleSideAnim = new AnimatedSprite(Game, new Vector2(mPositionX, mPositionY), 0, 0.2f, 0, "\\player\\IdleSide\\idleside", 8, iPlayerFrameRate);
-            this.m_runAnim = new AnimatedSprite(Game, new Vector2(mPositionX, mPositionY), 0, 0.2f, 0, "\\player\\RunLeft\\runleft", 8, iPlayerFrameRate);
+            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0,0), 0, mScale.X, 0, "\\player\\IdleFront\\idlefront", 8, iPlayerFrameRate);
+            this.m_idleSideAnim = new AnimatedSprite(Game, new Vector2(0,0), 0, mScale.X, 0, "\\player\\IdleSide\\idleside", 8, iPlayerFrameRate);
+            this.m_runAnim = new AnimatedSprite(Game, new Vector2(0,0), 0, mScale.X, 0, "\\player\\RunLeft\\runleft", 8, iPlayerFrameRate);
         }
 
         public override void Draw(GameTime gameTime)
@@ -162,15 +162,15 @@ namespace Love_and_Hate
             switch (this.PlayerState)
             {
                 case ePlayerState.IDLE:
-                    this.m_idleFrontAnim.Draw(gameTime, this.mPosition, SpriteEffects.None);
+                    this.m_idleFrontAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
                     break;
 
                 case ePlayerState.RUN:
                     {
                         if (this.moveX > 0)
-                            this.m_runAnim.Draw(gameTime, this.mPosition, SpriteEffects.FlipHorizontally);
+                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
                         else
-                            this.m_runAnim.Draw(gameTime, this.mPosition, SpriteEffects.None);
+                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
 
                         break;
                     }
@@ -191,6 +191,7 @@ namespace Love_and_Hate
         {
             SetState();
 
+            
             switch(this.PlayerState)
             {
                 case ePlayerState.IDLE:
@@ -201,7 +202,7 @@ namespace Love_and_Hate
                     this.m_runAnim.Update(gameTime);
                     break;
             }
-
+            
             // Merging code
 
             float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
@@ -248,10 +249,15 @@ namespace Love_and_Hate
                         PixelWidth += 5;
                         PixelHeight += 5;
 
+
                         //mScale.X *= 1.1f;
                         //mScale.Y = mScale.X;
                         mPosition = pos;
                         mBounds.Radius = Radius;
+
+                        this.m_idleFrontAnim.Scale = mScale.X;
+                        this.m_idleSideAnim.Scale = mScale.X;
+                        this.m_runAnim.Scale = mScale.X;
 
                         Program.Instance.mEnemiesKilled++;
                         if (Program.Instance.mEnemiesKilled % 5 == 0)
@@ -534,6 +540,12 @@ namespace Love_and_Hate
         {
             mScale.X = mPixelScale * 32;
             mScale.Y = mScale.X;
+            if (m_idleFrontAnim != null)
+            {
+                this.m_idleFrontAnim.Scale = mScale.X;
+                this.m_idleSideAnim.Scale = mScale.X;
+                this.m_runAnim.Scale = mScale.X;
+            }
             mMaxSpeed = 5000f / PixelWidth;
 
             float fPlayerBoundingRadius = this.Radius;
