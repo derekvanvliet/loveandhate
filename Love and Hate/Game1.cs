@@ -27,6 +27,8 @@ namespace Love_and_Hate
         GraphicsDeviceManager graphics;
         private GameState mGameState;
         public List<Enemy> mEnemies = new List<Enemy>();
+        public int mEnemiesKilled = 0;
+        public int mMaxEnemies = Config.Instance.GetAsInt("MaxEnemies");
 
         public Game1()
         {
@@ -161,7 +163,7 @@ namespace Love_and_Hate
 
         protected void GameUpdate(GameTime gameTime)
         {
-            if (mEnemies.Count < Config.Instance.GetAsInt("MaxEnemies"))
+            if (mEnemies.Count < mMaxEnemies)
             {
                 mEnemies.Add(new Enemy(this, this.Content));
             }
