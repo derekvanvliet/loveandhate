@@ -171,5 +171,43 @@ namespace Love_and_Hate
         protected void GameOverUpdate(GameTime gameTime)
         {
         }
+
+        public Enemy GetSmallestEnemy()
+        {
+            Enemy smallest = null;
+
+            foreach (Enemy e in mEnemies)
+            {
+                if (smallest == null)
+                {
+                    smallest = e;
+                }
+                else if (e.PixelWidth < smallest.PixelWidth)
+                {
+                    smallest = e;
+                }
+            }
+
+            return smallest;
+        }
+
+        public Player GetSmallestPlayer()
+        {
+            Player smallest = null;
+
+            foreach (Player p in GamePlayers)
+            {
+                if (smallest == null)
+                {
+                    smallest = p;
+                }
+                else if (p.PixelWidth < smallest.PixelWidth)
+                {
+                    smallest = p;
+                }
+            }
+
+            return smallest;
+        }
     }
 }
