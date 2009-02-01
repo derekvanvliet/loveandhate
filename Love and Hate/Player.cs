@@ -10,6 +10,8 @@ namespace Love_and_Hate
     public class Player : Sprite
     {
         public int mLevel = 1;
+        private float mMaxSpeed = 0f;
+        Vector2 mVelocity = new Vector2();
 
         private class PlayerMergeList
         {
@@ -129,6 +131,8 @@ namespace Love_and_Hate
 
         public override void Update(GameTime gameTime)
         {
+            float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
+
             if ( this.IsMerged  )
             {
                 if (!Player.IsThisPlayerCaptain(this))
@@ -266,7 +270,7 @@ namespace Love_and_Hate
             GamePadState state = GamePad.GetState(id);
 
             // Special handling for Player One
-            if (id == PlayerIndex.Two)
+            if (id == PlayerIndex.One)
             {
                 //if (!state.IsConnected)
                 //{
@@ -281,8 +285,25 @@ namespace Love_and_Hate
                         if (moveY == 0)
                             moveY = Keyboard.GetState().IsKeyDown(Keys.S) ? 1 : 0;
 
-                        this.mPositionX += moveX * Config.Instance.GetAsInt("PlayerSpeed");
-                        this.mPositionY += moveY * Config.Instance.GetAsInt("PlayerSpeed");
+                        mVelocity.X += mls * (moveX * 1000);
+                        mVelocity.Y += mls * (moveY * 1000);
+
+                        Vector2 drag = new Vector2(-mVelocity.X, -mVelocity.Y);
+                        if (drag.Length() != 0)
+                        {
+                            drag.Normalize();
+                            mVelocity = mVelocity + mls * (drag * (mVelocity.Length()*2));
+                        }
+
+                        if (mVelocity.Length() > mMaxSpeed)
+                        {
+                            mVelocity.Normalize();
+                            mVelocity = mVelocity * mMaxSpeed;
+                        }
+
+                        // set position
+                        mPositionX = mPosition.X + mls * mVelocity.X;
+                        mPositionY = mPosition.Y + mls * mVelocity.Y;
                         
                         base.Update(gameTime);
                         return;
@@ -292,8 +313,25 @@ namespace Love_and_Hate
 
             state.ThumbSticks.Left.Normalize();
 
-            this.mPositionX += state.ThumbSticks.Left.X * Config.Instance.GetAsInt("PlayerSpeed");
-            this.mPositionY += state.ThumbSticks.Left.Y * Config.Instance.GetAsInt("PlayerSpeed") * -1;
+            this.mVelocity.X += mls * (state.ThumbSticks.Left.X*100);
+            this.mVelocity.Y += mls * (-state.ThumbSticks.Left.Y*100);
+
+            Vector2 drag2 = new Vector2(-mVelocity.X, -mVelocity.Y);
+            if (drag2.Length() != 0)
+            {
+                drag2.Normalize();
+                mVelocity = mVelocity + mls * (drag2 * (mVelocity.Length() * 2));
+            }
+
+            if (mVelocity.Length() > mMaxSpeed)
+            {
+                mVelocity.Normalize();
+                mVelocity = mVelocity * mMaxSpeed;
+            }
+
+            // set position
+            mPositionX = mPosition.X + mls * mVelocity.X;
+            mPositionY = mPosition.Y + mls * mVelocity.Y;
 
             base.Update(gameTime);
         }
@@ -384,6 +422,7 @@ namespace Love_and_Hate
         {
             mScale.X = mPixelScale * 32;
             mScale.Y = mScale.X;
+            mMaxSpeed = 5000f / PixelWidth;
 
             float fPlayerBoundingRadius = this.Radius;
 

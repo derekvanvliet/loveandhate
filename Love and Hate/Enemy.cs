@@ -73,7 +73,7 @@ namespace Love_and_Hate
 
             GetNewTarget();
 
-            mMaxSpeed = 192 - PixelWidth;
+            mMaxSpeed = 4000f / PixelWidth;
 
             // init position
             switch (random.Next(1, 5))
@@ -166,15 +166,19 @@ namespace Love_and_Hate
                 }
             }
 
-            // limit speed
-            if (mVelocity.X > mMaxSpeed)
-                mVelocity.X = mMaxSpeed;
-            if (mVelocity.Y > mMaxSpeed)
-                mVelocity.Y = mMaxSpeed;
-            if (mVelocity.X < -mMaxSpeed)
-                mVelocity.X = -mMaxSpeed;
-            if (mVelocity.Y < -mMaxSpeed)
-                mVelocity.Y = -mMaxSpeed;
+            // add drag
+            Vector2 drag = new Vector2(-mVelocity.X, -mVelocity.Y);
+            if (drag.Length() != 0)
+            {
+                drag.Normalize();
+                mVelocity = mVelocity + mls * (drag * (mVelocity.Length() * 2));
+            }
+
+            if (mVelocity.Length() > mMaxSpeed)
+            {
+                mVelocity.Normalize();
+                mVelocity = mVelocity * mMaxSpeed;
+            }
 
             // set position
             mPositionX = mPosition.X + mls * mVelocity.X;
