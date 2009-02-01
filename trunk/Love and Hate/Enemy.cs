@@ -17,7 +17,6 @@ namespace Love_and_Hate
         Vector2 mVelocity = new Vector2();
 
 
-
         public Enemy(Game game, ContentManager theContentManager) : base(game)
         {
             
@@ -89,11 +88,11 @@ namespace Love_and_Hate
             float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
 
             // move towards nearest prey
-            Vector2 targPos = GetNearestPreyPosition();
+            LHPlayer prey = GetNearestPrey();
 
-            if (targPos != mPosition)
+            if (prey != null)
             {
-                Vector2 dir = targPos - mPosition;
+                Vector2 dir = prey.mPosition - mPosition;
                 dir.Normalize();
 
                 mVelocity = mVelocity + mls * (dir * mChaseStrength);
@@ -142,9 +141,9 @@ namespace Love_and_Hate
             base.Update(gameTime);
         }
 
-        public Vector2 GetNearestPreyPosition()
+        public LHPlayer GetNearestPrey()
         {
-            Vector2 closest = mPosition;
+            LHPlayer closest = null;
             float closestDistance = 0f;
 
             foreach (LHPlayer player in Program.Instance.GamePlayers)
@@ -153,7 +152,7 @@ namespace Love_and_Hate
                 {
                     if (closestDistance == 0)
                     {
-                        closest = player.mPosition;
+                        closest = player;
                         Vector2 distance = player.mPosition - mPosition;
                         closestDistance = distance.Length();
                     }
@@ -162,7 +161,7 @@ namespace Love_and_Hate
                         Vector2 distance = player.mPosition - mPosition;
                         if (distance.Length() < closestDistance)
                         {
-                            closest = player.mPosition;
+                            closest = player;
                             closestDistance = distance.Length();
                         }
                     }
