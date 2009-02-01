@@ -58,20 +58,7 @@ namespace Love_and_Hate
         {
             base.LoadContent();
 
-            mScale.X = mPixelScale * 32;
-            mScale.Y = mScale.X;
-
-            float fPlayerBoundingRadius = this.Radius; // Config.Instance.GetAsInt("PlayerBoundingRadius");
-
-            //if (fPlayerBoundingRadius == 0)
-              //  fPlayerBoundingRadius = this.mSpriteTexture.Width / 4;
-
-            this.mBounds =
-                new BoundingSphere
-                (
-                    new Vector3(this.mPosition.X, this.mPosition.Y, 0),
-                    fPlayerBoundingRadius
-                );
+            Reset();
         }
 
         public override void Update(GameTime gameTime)
@@ -97,7 +84,10 @@ namespace Love_and_Hate
                     }
                     else
                     {
+                        e.Destroy();
+                        destroy.Add(e);
 
+                        Reset();
                     }
                 }
             }
@@ -238,6 +228,31 @@ namespace Love_and_Hate
         {
             mLevel = 1;
 
+        }
+
+        public void Reset()
+        {
+            mScale.X = mPixelScale * 32;
+            mScale.Y = mScale.X;
+
+            float fPlayerBoundingRadius = this.Radius;
+
+            if (this.mBounds == null)
+            {
+                this.mBounds =
+                    new BoundingSphere
+                    (
+                        new Vector3(this.mPosition.X, this.mPosition.Y, 0),
+                        fPlayerBoundingRadius
+                    );
+            }
+            else
+            {
+                mBounds.Center.X = mPositionX;
+                mBounds.Center.Y = mPositionY;
+
+                mBounds.Radius = Radius;
+            }
         }
     }
 }
