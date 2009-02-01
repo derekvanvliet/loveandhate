@@ -90,7 +90,7 @@ namespace Love_and_Hate
             float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
 
             // move towards nearest prey
-            LHPlayer prey = GetNearestPrey();
+            Player prey = GetNearestPrey();
 
             if (prey != null)
             {
@@ -117,7 +117,7 @@ namespace Love_and_Hate
             }
 
             // move away from nearest predator
-            LHPlayer predator = GetNearestPredator();
+            Player predator = GetNearestPredator();
 
             if (predator != null)
             {
@@ -162,9 +162,9 @@ namespace Love_and_Hate
             base.Update(gameTime);
         }
 
-        public LHPlayer GetNearestPrey()
+        public Player GetNearestPrey()
         {
-            LHPlayer closest = null;
+            Player closest = null;
             float closestDistance = 0f;
 
             foreach (Player player in Program.Instance.GamePlayers)
@@ -192,9 +192,9 @@ namespace Love_and_Hate
             return closest;
         }
 
-        public LHPlayer GetNearestPredator()
+        public Player GetNearestPredator()
         {
-            LHPlayer closest = null;
+            Player closest = null;
             float closestDistance = 0f;
 
             foreach (Player player in Program.Instance.GamePlayers)

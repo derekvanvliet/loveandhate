@@ -9,10 +9,30 @@ namespace Love_and_Hate
 {
     public class Player : Sprite
     {
+        private class PlayerMergeList
+        {
+            List<Player> players = new List<Player>();
+
+            void Add(Player p)
+            {
+                players.Add(p);
+            }
+
+            bool Find(Player p)
+            {
+                if (players.Contains(p))
+                    return true;
+
+                return false;
+            }
+        }
+
         // Merging properties
         private static bool m_bCaptainOfMerge = false;
         private static bool m_bIsMerged       = false;
-        private static List<Player> m_MergedPlayers = new List<Player>();
+
+        private static Dictionary<PlayerIndex, PlayerMergeList> m_PlayerMerges = 
+            new Dictionary<PlayerIndex, PlayerMergeList>();
 
         private PlayerIndex m_id;
         
@@ -64,40 +84,41 @@ namespace Love_and_Hate
 
             foreach (Player p in Program.Instance.GamePlayers)
             {
-                if (m_bIsMerged)
+                if (CheckForCollision(p))
                 {
-                    if (CheckForCollision(p))
-                    {
-                        // Case 1 - I am not merged with any other players
-                        if (!m_bIsMerged)
-                        {
-                            //
+                    // Case 1 - I am not merged with any other players
+                 
+                        // Has a captain been selected?
+                            // If yes then add me to the list of merged players for this list
+                            // If no then make me the captain
 
-                        }
-
-                        // Case 2 - I am merged with one other player
-
-                        // Case 3 - I merged with one or more players
-
-
-
+                    // Case 2 - I am merged with one or more players
+                        
+                        // Another player is trying to join the collective
+                        
+                        // All players in the collective will need to have their merge
+                        // buttons pressed as well as the new player wanting to join to add
+                        // the new player
+                            
+                        // If all players have their merge buttons pressed
+                            // If yes then add the new player to the merged player list   
+                        
 
                         //if (IsMergeButtonPressed() && p.IsMergeButtonPressed())
                         //{
                         Trace.WriteLine("Wonder twin powers activate!");
 
-                        if (m_bIsMerged == false)
-                        {
-                            m_bCaptainOfMerge = true;
-                            m_MergedPlayers.Add(p);
-                        }
+                        //if (m_bIsMerged == false)
+                        //{
+                        //    m_bCaptainOfMerge = true;
+                        //    m_MergedPlayers.Add(p);
+                        //}
                         //else
                           //  return;
 
                         //p.IsMerged     = true;
                         //m_MergedPlayers = p;
                         //}
-                    }
                 }
             }
 
