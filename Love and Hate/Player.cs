@@ -10,6 +10,7 @@ namespace Love_and_Hate
 {
     public class Player : Sprite
     {
+        public int mDefaultSize = 64;
         public bool bInitialized = false;
 
         public enum ePlayerState
@@ -199,7 +200,7 @@ namespace Love_and_Hate
         {
             base.LoadContent();
 
-			Reset(32);
+			Reset(mDefaultSize);
 
             //int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
 
@@ -324,7 +325,7 @@ namespace Love_and_Hate
 
                             this.IsMerged = false;
 
-                            this.Reset(32);
+                            this.Reset(mDefaultSize);
                         }
                         else
                         {
@@ -489,7 +490,7 @@ namespace Love_and_Hate
                         e.Destroy();
                         destroy.Add(e);
 
-                        Reset(32);
+                        Reset((int)(PixelWidth*0.5f));
                     }
                 }
             }
@@ -681,6 +682,10 @@ namespace Love_and_Hate
 
         public void Reset(int newPixelWidth)
         {
+            if (newPixelWidth < mDefaultSize)
+            {
+                newPixelWidth = mDefaultSize;
+            }
             mScale.X = mPixelScale * newPixelWidth;
             mScale.Y = mScale.X;
             if (m_idleFrontAnim != null)
@@ -688,7 +693,7 @@ namespace Love_and_Hate
                 this.m_idleFrontAnim.Scale = mScale.X;
                 this.m_runAnim.Scale = mScale.X;
             }
-            mMaxSpeed = 5000f / PixelWidth;
+            mMaxSpeed = 10000f / PixelWidth;
 
             float fPlayerBoundingRadius = this.Radius;
 
