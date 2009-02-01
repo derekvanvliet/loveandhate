@@ -52,8 +52,9 @@ namespace Love_and_Hate
         }
         public float mRotation = 0f;
         public Vector2 mScale = new Vector2(1,1);
-        private SpriteBatch mSpriteBatch;
+        protected SpriteBatch mSpriteBatch;
         public string mAssetName;
+        public float layerDepth;
 
         protected BoundingSphere mBounds;
         public float mPixelScale = 0f;
@@ -132,7 +133,7 @@ namespace Love_and_Hate
         public override void Draw(GameTime gameTime)
         {
             mSpriteBatch.Begin();
-            mSpriteBatch.Draw(mSpriteTexture, mPos, null, Color.White, mRotation, Vector2.Zero, mScale, SpriteEffects.None, 0f);
+            mSpriteBatch.Draw(mSpriteTexture, mPos, null, Color.White, mRotation, Vector2.Zero, mScale, SpriteEffects.None, layerDepth);
             mSpriteBatch.End();
 
             base.Draw(gameTime);
