@@ -9,7 +9,7 @@ namespace Love_and_Hate
 {
     public class Player : Sprite
     {
-        private int mLevel = 0;
+        public int mLevel = 1;
 
         private class PlayerMergeList
         {
@@ -58,10 +58,13 @@ namespace Love_and_Hate
         {
             base.LoadContent();
 
-            float fPlayerBoundingRadius = Config.Instance.GetAsInt("PlayerBoundingRadius");
+            mScale.X = mPixelScale * 32;
+            mScale.Y = mScale.X;
 
-            if (fPlayerBoundingRadius == 0)
-                fPlayerBoundingRadius = this.mSpriteTexture.Width / 4;
+            float fPlayerBoundingRadius = this.Radius; // Config.Instance.GetAsInt("PlayerBoundingRadius");
+
+            //if (fPlayerBoundingRadius == 0)
+              //  fPlayerBoundingRadius = this.mSpriteTexture.Width / 4;
 
             this.mBounds =
                 new BoundingSphere
@@ -69,9 +72,6 @@ namespace Love_and_Hate
                     new Vector3(this.mPosition.X, this.mPosition.Y, 0),
                     fPlayerBoundingRadius
                 );
-           
-            mScale.X = mPixelScale * 32;
-            mScale.Y = mScale.X;            
         }
 
         public override void Update(GameTime gameTime)
@@ -82,9 +82,20 @@ namespace Love_and_Hate
             {
 
                 if (CheckForCollision(e))
-                {                   
-                    e.Destroy();
-                    destroy.Add(e);
+                {
+                    if (e.PixelWidth < this.PixelWidth)
+                    {
+                        e.Destroy();
+                        destroy.Add(e);
+
+                        mScale.X *= 1.10f;
+                        mScale.Y = mScale.X;
+                        mBounds.Radius = Radius;
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
 
@@ -218,6 +229,12 @@ namespace Love_and_Hate
             mPositionX = Config.Instance.GetAsInt("ScreenWidth") * 0.5f;
             mPositionY = Config.Instance.GetAsInt("ScreenHeight") * 0.5f;
             base.Initialize();
+        }
+
+        public void Damage()
+        {
+            mLevel = 1;
+
         }
     }
 }

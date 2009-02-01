@@ -208,5 +208,42 @@ namespace Love_and_Hate
 
             return smallest;
         }
+        public Enemy GetLargestEnemy()
+        {
+            Enemy largest = null;
+
+            foreach (Enemy e in mEnemies)
+            {
+                if (largest == null)
+                {
+                    largest = e;
+                }
+                else if (e.PixelWidth > largest.PixelWidth)
+                {
+                    largest = e;
+                }
+            }
+
+            return largest;
+        }
+
+        public Player GetLargestPlayer()
+        {
+            Player largest = null;
+
+            foreach (Player p in GamePlayers)
+            {
+                if (largest == null)
+                {
+                    largest = p;
+                }
+                else if (p.PixelWidth > largest.PixelWidth)
+                {
+                    largest = p;
+                }
+            }
+
+            return largest;
+        }
     }
 }
