@@ -95,6 +95,36 @@ namespace Love_and_Hate
             return false;
         }
 
+        public static Vector2 GetAvgDirectionForAllPlayers(Player pCaptain)
+        {
+            Vector2 result = new Vector2();
+
+            foreach (Player p in Player.m_PlayerMerges[pCaptain.id].players)
+            {
+                float moveX = GamePad.GetState(p.id).ThumbSticks.Left.X;
+                float moveY = -GamePad.GetState(p.id).ThumbSticks.Left.Y;
+
+                Vector2 playerDir = new Vector2(moveX, moveY);
+
+                if (playerDir.Length() > 0)                    
+                {
+                    playerDir.Normalize();
+                    result += playerDir;
+                }
+            }
+
+            // Get captain movement
+            float fCaptainMoveX = GamePad.GetState(pCaptain.id).ThumbSticks.Left.X;
+            float fCaptainMoveY = GamePad.GetState(pCaptain.id).ThumbSticks.Left.Y;
+
+            result += new Vector2(fCaptainMoveX, -fCaptainMoveY);
+
+            if (result.Length() > 0)
+                result.Normalize();
+
+            return result;
+        }
+
         private static void RemoveMergeList(PlayerIndex captain)
         {
             if ( m_PlayerMerges.ContainsKey(captain) )
@@ -170,6 +200,9 @@ namespace Love_and_Hate
 
         public override void Draw(GameTime gameTime)
         {
+            if (IsMerged && !Player.IsThisPlayerCaptain(this) )
+                return;
+
             switch (this.PlayerState)
             {
                 case ePlayerState.IDLE:
@@ -178,7 +211,6 @@ namespace Love_and_Hate
 
                 case ePlayerState.RUN:
                     {
-
                         if (mVelocity.X > 10)
                             this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
                         else if (mVelocity.X < -10)
@@ -207,30 +239,18 @@ namespace Love_and_Hate
 
         public override void Update(GameTime gameTime)
         {
-            if (!bInitialized)
+            float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
+
+        	if (!bInitialized)
             {
                 ResetPosition();
                 bInitialized = true;
+                return;
             }
-            SetState();
 
-            
-            switch(this.PlayerState)
-            {
-                case ePlayerState.IDLE:
-                    this.m_idleFrontAnim.Update(gameTime);
-                    break;
+            Vector2 mergedMoveDirection = new Vector2();
 
-                case ePlayerState.RUN:
-                    this.m_runAnim.Update(gameTime);
-                    break;
-            }
-            
-            // Merging code
-
-            float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
-
-            if ( this.IsMerged  )
+            if (this.IsMerged)
             {
                 if (!Player.IsThisPlayerCaptain(this))
                 {
@@ -250,61 +270,42 @@ namespace Love_and_Hate
                             Player.RemoveMergeList(this.id);
 
                             this.IsMerged = false;
+
+                            this.Reset(32);
                         }
-                    }
-                }
-            }
-
-            List<Enemy> destroy = new List<Enemy>();
-
-            foreach (Enemy e in Program.Instance.mEnemies)
-            {
-
-                if (CheckForCollision(e))
-                {
-                    if (e.PixelWidth < this.PixelWidth)
-                    {
-                        e.Destroy();
-                        destroy.Add(e);
-
-                        Vector2 pos = mPosition;
-
-                        PixelWidth += 5;
-                        PixelHeight += 5;
-
-
-                        //mScale.X *= 1.1f;
-                        //mScale.Y = mScale.X;
-                        mPosition = pos;
-                        mBounds.Radius = Radius;
-                        mBounds.Center.X = mPositionX;
-                        mBounds.Center.Y = mPositionY;
-
-                        this.m_idleFrontAnim.Scale = mScale.X;
-                        this.m_runAnim.Scale = mScale.X;
-
-                        Program.Instance.mEnemiesKilled++;
-                        if (Program.Instance.mEnemiesKilled % 3 == 0)
+                        else
                         {
-                            if (Program.Instance.mMaxEnemies < 100)
-                                Program.Instance.mMaxEnemies++;
-                        }
-                    }
-                    else
-                    {
-                        e.Destroy();
-                        destroy.Add(e);
+                            // Set state to always running.  Update the animation here!
+                            //
+                            this.PlayerState = ePlayerState.RUN;
+                            this.m_runAnim.Update(gameTime);       
 
-                        Reset(32);
+                            mergedMoveDirection = new Vector2();
+                            mergedMoveDirection = GetAvgDirectionForAllPlayers(this);
+
+                            // There is always a speed movement applied when the players 
+                            // are merged
+                            //
+                            if (mergedMoveDirection.Length() == 0)
+                                mergedMoveDirection = new Vector2(1, 1);
+
+                            this.mVelocity.X = mls * (mergedMoveDirection.X * 800.0f);
+                            this.mVelocity.Y = mls * (mergedMoveDirection.Y * 800.0f);
+
+                            //mergedMoveDirection *= new Vector2(5, 5);
+
+                            this.mPositionX += this.mVelocity.X;// mergedMoveDirection.X;
+                            this.mPositionY += this.mVelocity.Y;//mergedMoveDirection.Y;
+                            
+                            base.Update(gameTime);
+
+                            return;
+                        }
                     }
                 }
             }
 
-            foreach (Enemy e in destroy)
-            {
-                Program.Instance.mEnemies.Remove(e);
-            }
-
+            // Check for collisions with other players
             foreach (Player p in Program.Instance.GamePlayers)
             {
                 // Don't bother checking if this player has collided with itself
@@ -315,8 +316,9 @@ namespace Love_and_Hate
                 if (CheckForCollision(p))
                 {
                     // Case 1 - I am not merged with any other players
-                    if (!IsMerged)
+                    if ( !IsMerged || !p.IsMerged )
                     {
+                        // TODO - Remove for final game!
                         //if (IsMergeButtonPressed() && p.IsMergeButtonPressed())
                         //{
                             m_bIsMerged = true;
@@ -326,6 +328,7 @@ namespace Love_and_Hate
                             if (m_PlayerMerges.ContainsKey(this.id))
                             {
                                 m_PlayerMerges[this.id].Add(p);
+                                p.IsMerged = true;
                             }
                             // If no then make me the captain
                             else
@@ -333,8 +336,7 @@ namespace Love_and_Hate
                                 m_PlayerMerges[this.id] = new PlayerMergeList();
                                 
                                 p.IsMerged = true;
-                                m_PlayerMerges[this.id].Add(p);
-                                
+                                m_PlayerMerges[this.id].Add(p);                                
                             }
                         //}
                     }
@@ -380,10 +382,75 @@ namespace Love_and_Hate
                 }
             }
 
+            SetState();
+
+            switch(this.PlayerState)
+            {
+                case ePlayerState.IDLE:
+                    this.m_idleFrontAnim.Update(gameTime);
+                    break;
+
+                case ePlayerState.RUN:
+                    this.m_runAnim.Update(gameTime);
+                    break;
+            }         
+          
+ 	        List<Enemy> destroy = new List<Enemy>();
+
+            foreach (Enemy e in Program.Instance.mEnemies)
+            {
+
+                if (CheckForCollision(e))
+                {
+                    if (e.PixelWidth < this.PixelWidth)
+                    {
+                        e.Destroy();
+                        destroy.Add(e);
+
+                        Vector2 pos = mPosition;
+
+                        PixelWidth += 5;
+                        PixelHeight += 5;
+
+
+                        //mScale.X *= 1.1f;
+                        //mScale.Y = mScale.X;
+                        mPosition = pos;
+                        mBounds.Radius = Radius;
+                        mBounds.Center.X = mPositionX;
+                        mBounds.Center.Y = mPositionY;
+
+                        this.m_idleFrontAnim.Scale = mScale.X;
+                        this.m_runAnim.Scale = mScale.X;
+
+                        Program.Instance.mEnemiesKilled++;
+                        if (Program.Instance.mEnemiesKilled % 3 == 0)
+                        {
+                            if (Program.Instance.mMaxEnemies < 100)
+                                Program.Instance.mMaxEnemies++;
+                        }
+                    }
+                    else
+                    {
+                        e.Destroy();
+                        destroy.Add(e);
+
+                        Reset(32);
+                    }
+                }
+            }
+
+
+            foreach (Enemy e in destroy)
+            {
+                Program.Instance.mEnemies.Remove(e);
+            }
+
+           
             GamePadState state = GamePad.GetState(id);
 
             // Special handling for Player One
-            if (id == PlayerIndex.One)
+            if (id == PlayerIndex.Two)
             {
                 //if (!state.IsConnected)
                 //{

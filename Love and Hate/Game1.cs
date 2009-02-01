@@ -157,14 +157,14 @@ namespace Love_and_Hate
                     //
                     m_GamePlayers.Add(new Player(this, PlayerIndex.One));
 
-                    //if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
-                    //m_GamePlayers.Add(new Player(this, PlayerIndex.Two));
+                    if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
+                        m_GamePlayers.Add(new Player(this, PlayerIndex.Two));
 
-                    //if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
-                    //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Three));
+                    if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
+                        m_GamePlayers.Add(new Player(this, PlayerIndex.Three));
 
-                    //if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
-                    //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Four));
+                    if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
+                        m_GamePlayers.Add(new Player(this, PlayerIndex.Four));
 
 
                     mGameState = GameState.Game;
