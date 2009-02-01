@@ -15,6 +15,7 @@ namespace Love_and_Hate
         private float mAvoidStrength = 2000;
         Vector2 mVelocity = new Vector2();
         Vector2 mTarget = new Vector2();
+        public int mLevel = 0;
 
 
         public Enemy(Game game, ContentManager theContentManager) : base(game)
@@ -48,18 +49,24 @@ namespace Love_and_Hate
 
             Player smallestPlayer = Program.Instance.GetSmallestPlayer();
             Enemy smallestEnemy = Program.Instance.GetSmallestEnemy();
+            Player largestPlayer = Program.Instance.GetLargestPlayer();
+            Enemy largestEnemy = Program.Instance.GetLargestEnemy();
 
-            if (smallestEnemy == null || smallestPlayer == null)
+            if (smallestEnemy == null)
             {
-                mScale.X = mPixelScale * random.Next(16, 128);
+                mScale.X = mPixelScale * random.Next((int)(smallestPlayer.PixelWidth * 0.5f), (int)(largestPlayer.PixelWidth * 2.0f));
             }
             else if (smallestEnemy.PixelWidth > smallestPlayer.PixelWidth)
             {
                 mScale.X = mPixelScale * random.Next(16, (int)smallestPlayer.PixelWidth);
             }
+            else if (largestEnemy.PixelWidth < largestPlayer.PixelWidth)
+            {
+                mScale.X = mPixelScale * random.Next((int)largestPlayer.PixelWidth, (int)(largestPlayer.PixelWidth * 2.0f));
+            }
             else
             {
-                mScale.X = mPixelScale * random.Next(16, 128);
+                mScale.X = mPixelScale * random.Next((int)(smallestPlayer.PixelWidth * 0.5f), (int)(largestPlayer.PixelWidth * 2.0f));
             }
 
             mScale.Y = mScale.X;
