@@ -30,6 +30,7 @@ namespace Love_and_Hate
         public int mEnemiesKilled = 0;
         public int mMaxEnemies = Config.Instance.GetAsInt("MaxEnemies");
         public Background mBackground;
+        public LoadingScreen mLoadingScreen;
 
         public Game1()
         {
@@ -136,32 +137,38 @@ namespace Love_and_Hate
 
         protected void InitUpdate(GameTime gameTime)
         {
+            mLoadingScreen = new LoadingScreen(this, this.Content);
             mGameState = GameState.Title;
         }
 
         protected void TitleUpdate(GameTime gameTime)
         {
             // if start game
-            if (1 == 1)
+
+            if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
             {
-                mBackground = new Background(this, this.Content);
-                m_GamePlayers = new List<Player>();
+                if (IsButtonPressed(GamePad.GetState(PlayerIndex.One).Buttons.A))
+                {
+                    mLoadingScreen.Destroy();
+                    mBackground = new Background(this, this.Content);
+                    m_GamePlayers = new List<Player>();
 
-                // Player one will always be added regardless of whether a controller is connected or not
-                //
-                m_GamePlayers.Add(new Player(this, PlayerIndex.One));
+                    // Player one will always be added regardless of whether a controller is connected or not
+                    //
+                    m_GamePlayers.Add(new Player(this, PlayerIndex.One));
 
-                //if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
-                //m_GamePlayers.Add(new Player(this, PlayerIndex.Two));
+                    //if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
+                    //m_GamePlayers.Add(new Player(this, PlayerIndex.Two));
 
-                //if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
-                //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Three));
+                    //if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
+                    //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Three));
 
-                //if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
-                //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Four));
+                    //if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
+                    //  m_GamePlayers.Add(new LHPlayer(this, PlayerIndex.Four));
 
 
-                mGameState = GameState.Game;                
+                    mGameState = GameState.Game;
+                }
             }
         }
 
@@ -251,5 +258,13 @@ namespace Love_and_Hate
 
             return largest;
         }
+        bool IsButtonPressed(ButtonState btn)
+        {
+            if (btn == ButtonState.Pressed)
+                return true;
+
+            return false;
+        }
+
     }
 }
