@@ -167,10 +167,17 @@ namespace Love_and_Hate
 
                 case ePlayerState.RUN:
                     {
-                        if (this.moveX > 0)
+
+                        if (mVelocity.X > 10)
                             this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
-                        else
+                        else if (mVelocity.X < -10)
                             this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                        else if (mVelocity.Y > 10)
+                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                        else if (mVelocity.Y < -10)
+                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                        else
+                            this.m_idleFrontAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
 
                         break;
                     }
@@ -448,7 +455,7 @@ namespace Love_and_Hate
 
         public bool IsStopped()
         {
-            if (GamePad.GetState(this.id).ThumbSticks.Left.X == 0 && GamePad.GetState(this.id).ThumbSticks.Left.Y == 0)
+            if (mVelocity.Length() < 25)
                 return true;
 
             return false;
