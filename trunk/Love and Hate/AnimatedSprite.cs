@@ -135,7 +135,7 @@ namespace Love_and_Hate
             //Rectangle sourcerect = new Rectangle(FrameWidth * frame, 0, FrameWidth, FrameTextures[frame].Height);
             Rectangle sourcerect = new Rectangle(FrameWidth, 0, FrameWidth, FrameTextures[frame].Height);
 
-            batch.Draw(FrameTextures[frame], screenPos, null, Color.White, 0, screenPos, this.Scale, effects, 0);//, Rotation, Origin, Scale, SpriteEffects.None, Depth);
+            batch.Draw(FrameTextures[frame], screenPos, null, Color.White, 0, new Vector2(), this.Scale, effects, 0);//, Rotation, Origin, Scale, SpriteEffects.None, Depth);
             //batch.Draw(FrameTextures[frame], screenPos, sourcerect, Color.White, Rotation, Origin, Scale, SpriteEffects.None, Depth);
         }
 
