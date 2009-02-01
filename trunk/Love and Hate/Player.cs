@@ -9,6 +9,8 @@ namespace Love_and_Hate
 {
     public class Player : Sprite
     {
+        private int mLevel = 0;
+
         private class PlayerMergeList
         {
             List<Player> players = new List<Player>();
