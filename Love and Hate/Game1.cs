@@ -27,7 +27,6 @@ namespace Love_and_Hate
         GraphicsDeviceManager graphics;
         private GameState mGameState;
         public List<Enemy> mEnemies = new List<Enemy>();
-        private int mLevel = 1;
 
         public Game1()
         {
