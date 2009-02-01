@@ -80,26 +80,26 @@ namespace Love_and_Hate
             {
                 case 1: // left
                     {
-                        mPositionX = -PixelWidth;
+                        mPositionX = -Radius;
                         mPositionY = random.Next(0, Config.Instance.GetAsInt("ScreenHeight"));
                         break;
                     }
                 case 2: // top
                     {
                         mPositionX = random.Next(0, Config.Instance.GetAsInt("ScreenWidth"));
-                        mPositionY = -PixelHeight;
+                        mPositionY = -Radius;
                         break;
                     }
                 case 3: // right
                     {
-                        mPositionX = Config.Instance.GetAsInt("ScreenWidth");
+                        mPositionX = Config.Instance.GetAsInt("ScreenWidth") + Radius;
                         mPositionY = random.Next(0, Config.Instance.GetAsInt("ScreenHeight"));
                         break;
                     }
                 case 4: // bottom
                     {
                         mPositionX = random.Next(0, Config.Instance.GetAsInt("ScreenWidth"));
-                        mPositionY = Config.Instance.GetAsInt("ScreenHeight");
+                        mPositionY = Config.Instance.GetAsInt("ScreenHeight") + Radius;
                         break;
                     }
             }

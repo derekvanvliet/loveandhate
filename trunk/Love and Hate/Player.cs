@@ -172,10 +172,20 @@ namespace Love_and_Hate
 
                         Vector2 pos = mPosition;
 
-                        mScale.X *= 1.1f;
-                        mScale.Y = mScale.X;
+                        PixelWidth += 5;
+                        PixelHeight += 5;
+
+                        //mScale.X *= 1.1f;
+                        //mScale.Y = mScale.X;
                         mPosition = pos;
                         mBounds.Radius = Radius;
+
+                        Program.Instance.mEnemiesKilled++;
+                        if (Program.Instance.mEnemiesKilled % 5 == 0)
+                        {
+                            if (Program.Instance.mMaxEnemies < 100)
+                                Program.Instance.mMaxEnemies++;
+                        }
                     }
                     else
                     {

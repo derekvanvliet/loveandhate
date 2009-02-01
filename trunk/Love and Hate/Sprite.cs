@@ -73,6 +73,11 @@ namespace Love_and_Hate
 
                 return 0f;
             }
+            set
+            {
+                if (mSpriteTexture != null)
+                    mScale.X = mPixelScale * value;
+            }
         }
         public float PixelHeight
         {
@@ -82,6 +87,11 @@ namespace Love_and_Hate
                     return mSpriteTexture.Height * mScale.Y;
 
                 return 0f;
+            }
+            set
+            {
+                if (mSpriteTexture != null)
+                    mScale.Y = mPixelScale * value;
             }
         }
         public float Radius
