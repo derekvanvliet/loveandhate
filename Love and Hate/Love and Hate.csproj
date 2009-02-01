@@ -66,6 +66,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="RankFirstNum.cs" />
+    <Compile Include="RankP1.cs" />
+    <Compile Include="RankP2.cs" />
+    <Compile Include="RankP3.cs" />
+    <Compile Include="RankP4.cs" />
+    <Compile Include="RankSecondNum.cs" />
+    <Compile Include="RankThirdNum.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Text.cs" />
