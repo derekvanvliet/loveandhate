@@ -16,6 +16,22 @@ namespace Love_and_Hate
         Vector2 mVelocity = new Vector2();
         Vector2 mTarget = new Vector2();
         public int mLevel = 0;
+        public AnimatedSprite mAttackSide;
+        public AnimatedSprite mRunSide;
+        public enum eEnemyState
+        {
+            ATTACK = 0,
+            RUN
+        }
+
+        private eEnemyState mState = eEnemyState.ATTACK;
+
+        public eEnemyState EnemyState
+        {
+            get { return mState; }
+            set { mState = value; }
+        }
+
 
 
         public Enemy(Game game, ContentManager theContentManager) : base(game)
@@ -103,13 +119,47 @@ namespace Love_and_Hate
                         break;
                     }
             }
+            int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
+
+            mAttackSide = new AnimatedSprite(Game, new Vector2(), 0, mScale.X, 0, "\\enemy\\AttackSide\\enemyattack", 8, iPlayerFrameRate);
+            mRunSide = new AnimatedSprite(Game, new Vector2(), 0, mScale.X, 0, "\\enemy\\RunSide\\enemyrunside", 8, iPlayerFrameRate);
 
 
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (EnemyState == eEnemyState.RUN)
+            {
+                if (mVelocity.X > 10)
+                    this.mRunSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                else if (mVelocity.X < -10)
+                    this.mRunSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                else if (mVelocity.Y > 10)
+                    this.mRunSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                else
+                    this.mRunSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+            }
+            else
+            {
+                if (mVelocity.X > 10)
+                    this.mAttackSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                else if (mVelocity.X < -10)
+                    this.mAttackSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                else if (mVelocity.Y > 10)
+                    this.mAttackSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                else
+                    this.mAttackSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+            }
+            base.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
             float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
+
+            this.mAttackSide.Update(gameTime);
+            this.mRunSide.Update(gameTime);
 
             // move towards nearest prey
             Player prey = GetNearestPrey();
@@ -120,6 +170,7 @@ namespace Love_and_Hate
                 dir.Normalize();
 
                 mVelocity = mVelocity + mls * (dir * mChaseStrength);
+                EnemyState = eEnemyState.ATTACK;
             }
             else
             {
@@ -136,6 +187,7 @@ namespace Love_and_Hate
                 {
                     GetNewTarget();
                 }
+                EnemyState = eEnemyState.RUN;
             }
 
             // move away from nearest predator
