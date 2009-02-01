@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Enemy.cs" />

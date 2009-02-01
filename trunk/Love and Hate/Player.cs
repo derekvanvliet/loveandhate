@@ -4,11 +4,27 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Love_and_Hate
 {
     public class Player : Sprite
     {
+        public enum ePlayerState
+        {
+            WALK = 0,
+            IDLE,
+            RUN
+        }
+
+        private ePlayerState mState = ePlayerState.IDLE;
+
+        public ePlayerState PlayerState 
+        {
+            get { return mState;  }
+            set { mState = value; }
+        }
+
         public int mLevel = 1;
         private float mMaxSpeed = 0f;
         Vector2 mVelocity = new Vector2();
@@ -51,8 +67,10 @@ namespace Love_and_Hate
 
                 return false;
             }
-
         }
+
+        float moveX = 0;
+        float moveY = 0;
 
         // Merging properties
         private bool m_bIsMerged = false;
@@ -88,6 +106,10 @@ namespace Love_and_Hate
                 m_PlayerMerges.Remove(captain);
             }
         }
+
+        AnimatedSprite m_idleFrontAnim;
+        AnimatedSprite m_idleSideAnim;
+        AnimatedSprite m_runAnim;        
 
         private PlayerIndex m_id;
         
@@ -126,11 +148,62 @@ namespace Love_and_Hate
                 );
            
             mScale.X = mPixelScale * 32;
-            mScale.Y = mScale.X;            
+            mScale.Y = mScale.X;
+
+            int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
+
+            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(mPositionX, mPositionY), 0, 0.2f, 0, "\\player\\IdleFront\\idlefront", 8, iPlayerFrameRate);
+            this.m_idleSideAnim = new AnimatedSprite(Game, new Vector2(mPositionX, mPositionY), 0, 0.2f, 0, "\\player\\IdleSide\\idleside", 8, iPlayerFrameRate);
+            this.m_runAnim = new AnimatedSprite(Game, new Vector2(mPositionX, mPositionY), 0, 0.2f, 0, "\\player\\RunLeft\\runleft", 8, iPlayerFrameRate);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            switch (this.PlayerState)
+            {
+                case ePlayerState.IDLE:
+                    this.m_idleFrontAnim.Draw(gameTime, this.mPosition, SpriteEffects.None);
+                    break;
+
+                case ePlayerState.RUN:
+                    {
+                        if (this.moveX > 0)
+                            this.m_runAnim.Draw(gameTime, this.mPosition, SpriteEffects.FlipHorizontally);
+                        else
+                            this.m_runAnim.Draw(gameTime, this.mPosition, SpriteEffects.None);
+
+                        break;
+                    }
+            }                
+
+            base.Draw(gameTime);           
+        }
+
+        public void SetState()
+        {
+            if (IsStopped())
+                this.PlayerState = ePlayerState.IDLE;
+            else
+                this.PlayerState = ePlayerState.RUN;
         }
 
         public override void Update(GameTime gameTime)
         {
+            SetState();
+
+            switch(this.PlayerState)
+            {
+                case ePlayerState.IDLE:
+                    this.m_idleFrontAnim.Update(gameTime);
+                    break;
+
+                case ePlayerState.RUN:
+                    this.m_runAnim.Update(gameTime);
+                    break;
+            }
+
+            // Merging code
+
             float mls = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
 
             if ( this.IsMerged  )
@@ -286,8 +359,8 @@ namespace Love_and_Hate
                 //{
                     if (Keyboard.GetState().GetPressedKeys().Length > 0)
                     {
-                        int moveY = Keyboard.GetState().IsKeyDown(Keys.W) ? -1 : 0;
-                        int moveX = Keyboard.GetState().IsKeyDown(Keys.D) ? 1 : 0;
+                        this.moveY = Keyboard.GetState().IsKeyDown(Keys.W) ? -1 : 0;
+                        this.moveX = Keyboard.GetState().IsKeyDown(Keys.D) ? 1 : 0;
 
                         if (moveX == 0)
                             moveX = Keyboard.GetState().IsKeyDown(Keys.A) ? -1 : 0;
@@ -330,6 +403,9 @@ namespace Love_and_Hate
                 //}
             }
 
+            this.moveX = state.ThumbSticks.Left.X;
+            this.moveY = state.ThumbSticks.Left.Y;
+
             state.ThumbSticks.Left.Normalize();
 
             this.mVelocity.X += mls * (state.ThumbSticks.Left.X*100);
@@ -362,6 +438,14 @@ namespace Love_and_Hate
                 mPositionY = Radius;
 
             base.Update(gameTime);
+        }
+
+        public bool IsStopped()
+        {
+            if (GamePad.GetState(this.id).ThumbSticks.Left.X == 0 && GamePad.GetState(this.id).ThumbSticks.Left.Y == 0)
+                return true;
+
+            return false;
         }
 
         public bool CheckForCollision(Sprite obj)
