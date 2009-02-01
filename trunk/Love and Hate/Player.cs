@@ -140,7 +140,9 @@ namespace Love_and_Hate
         }
 
         AnimatedSprite m_idleFrontAnim;
-        AnimatedSprite m_runAnim;        
+        AnimatedSprite m_runAnim;
+        
+        static AnimatedSprite m_mergeMonsterAnim;
 
         private PlayerIndex m_id;
         
@@ -158,13 +160,6 @@ namespace Love_and_Hate
         public Player(Game game, PlayerIndex id) : base(game)
         {
             this.m_id = id;
-        }
-
-        protected override void LoadContent()
-        {
-            base.LoadContent();
-
-			Reset(32);
 
             int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
 
@@ -178,23 +173,63 @@ namespace Love_and_Hate
                     }
                 case PlayerIndex.Two:
                     {
-                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p2_idle", 8, iPlayerFrameRate);
-                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p2_run", 8, iPlayerFrameRate);
+                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player02\\idle\\p2_idle", 8, iPlayerFrameRate);
+                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player02\\run\\p2_run", 8, iPlayerFrameRate);
                         break;
                     }
                 case PlayerIndex.Three:
                     {
-                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p3_idle", 8, iPlayerFrameRate);
-                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p3_run", 8, iPlayerFrameRate);
+                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player03\\idle\\p3_idle", 8, iPlayerFrameRate);
+                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player03\\run\\p3_run", 8, iPlayerFrameRate);
                         break;
                     }
                 case PlayerIndex.Four:
                     {
-                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p4_idle", 8, iPlayerFrameRate);
-                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p4_run", 8, iPlayerFrameRate);
+                        this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player04\\idle\\p4_idle", 8, iPlayerFrameRate);
+                        this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player04\\run\\p4_run", 8, iPlayerFrameRate);
                         break;
                     }
             }
+
+            if (Player.m_mergeMonsterAnim == null)
+                Player.m_mergeMonsterAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\mergemonster\\mm_run", 8, iPlayerFrameRate);                
+        }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+
+			Reset(32);
+
+            //int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
+
+            //switch (id)
+            //{
+            //    case PlayerIndex.One:
+            //        {
+            //            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player01\\idle\\p1_idle", 8, iPlayerFrameRate);
+            //            this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player01\\run\\p1_run", 8, iPlayerFrameRate);
+            //            break;
+            //        }
+            //    case PlayerIndex.Two:
+            //        {
+            //            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p2_idle", 8, iPlayerFrameRate);
+            //            this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p2_run", 8, iPlayerFrameRate);
+            //            break;
+            //        }
+            //    case PlayerIndex.Three:
+            //        {
+            //            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p3_idle", 8, iPlayerFrameRate);
+            //            this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p3_run", 8, iPlayerFrameRate);
+            //            break;
+            //        }
+            //    case PlayerIndex.Four:
+            //        {
+            //            this.m_idleFrontAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\IdleFront\\p4_idle", 8, iPlayerFrameRate);
+            //            this.m_runAnim = new AnimatedSprite(Game, new Vector2(0, 0), 0, mScale.X, 0, "\\player\\RunLeft\\p4_run", 8, iPlayerFrameRate);
+            //            break;
+            //        }
+            //}
 
         }
 
@@ -211,16 +246,34 @@ namespace Love_and_Hate
 
                 case ePlayerState.RUN:
                     {
-                        if (mVelocity.X > 10)
-                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
-                        else if (mVelocity.X < -10)
-                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
-                        else if (mVelocity.Y > 10)
-                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
-                        else if (mVelocity.Y < -10)
-                            this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                        if (IsMerged)
+                        {
+                            Player.m_mergeMonsterAnim.Scale = 2.0f;
+
+                            if (mVelocity.X > 10)
+                                Player.m_mergeMonsterAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                            else if (mVelocity.X < -10)
+                                Player.m_mergeMonsterAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                            else if (mVelocity.Y > 10)
+                                Player.m_mergeMonsterAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                            else if (mVelocity.Y < -10)
+                                Player.m_mergeMonsterAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                            else
+                                Player.m_mergeMonsterAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                        }
                         else
-                            this.m_idleFrontAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                        {
+                            if (mVelocity.X > 10)
+                                this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                            else if (mVelocity.X < -10)
+                                this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                            else if (mVelocity.Y > 10)
+                                this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.FlipHorizontally);
+                            else if (mVelocity.Y < -10)
+                                this.m_runAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                            else
+                                this.m_idleFrontAnim.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
+                        }
 
                         break;
                     }
@@ -278,7 +331,8 @@ namespace Love_and_Hate
                             // Set state to always running.  Update the animation here!
                             //
                             this.PlayerState = ePlayerState.RUN;
-                            this.m_runAnim.Update(gameTime);       
+                            this.m_runAnim.Update(gameTime);
+                            Player.m_mergeMonsterAnim.Update(gameTime);
 
                             mergedMoveDirection = new Vector2();
                             mergedMoveDirection = GetAvgDirectionForAllPlayers(this);
@@ -338,7 +392,7 @@ namespace Love_and_Hate
                                 p.IsMerged = true;
                                 m_PlayerMerges[this.id].Add(p);                                
                             }
-                        //}
+                        //}//
                     }
 
                     // Case 2 - I am merged with one or more players
