@@ -53,12 +53,6 @@ namespace Love_and_Hate
         {
             base.LoadContent();
 
-            this.mBounds =
-                new BoundingSphere
-                (
-                    new Vector3(this.mPosition.X, this.mPosition.Y, 0),
-                    this.mSpriteTexture.Width / 4
-                );            
 
             // init scale
             Random random = new Random((int)DateTime.Now.Ticks);
@@ -87,6 +81,13 @@ namespace Love_and_Hate
 
             mScale.Y = mScale.X;
 
+            this.mBounds =
+                new BoundingSphere
+                (
+                    new Vector3(this.mPosition.X, this.mPosition.Y, 0),
+                    this.Radius
+                );
+            
             GetNewTarget();
 
             mMaxSpeed = 4000f / PixelWidth;
