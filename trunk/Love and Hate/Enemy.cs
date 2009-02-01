@@ -46,7 +46,22 @@ namespace Love_and_Hate
             // init scale
             Random random = new Random((int)DateTime.Now.Ticks);
 
-            mScale.X = mPixelScale * random.Next(16,128);
+            Player smallestPlayer = Program.Instance.GetSmallestPlayer();
+            Enemy smallestEnemy = Program.Instance.GetSmallestEnemy();
+
+            if (smallestEnemy == null || smallestPlayer == null)
+            {
+                mScale.X = mPixelScale * random.Next(16, 128);
+            }
+            else if (smallestEnemy.PixelWidth > smallestPlayer.PixelWidth)
+            {
+                mScale.X = mPixelScale * random.Next(16, (int)smallestPlayer.PixelWidth);
+            }
+            else
+            {
+                mScale.X = mPixelScale * random.Next(16, 128);
+            }
+
             mScale.Y = mScale.X;
 
             GetNewTarget();
