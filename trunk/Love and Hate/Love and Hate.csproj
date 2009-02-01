@@ -57,7 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="LHPlayer.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
