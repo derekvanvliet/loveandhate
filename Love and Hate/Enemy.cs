@@ -122,8 +122,8 @@ namespace Love_and_Hate
             }
             int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
 
-            mAttackSide = new AnimatedSprite(Game, new Vector2(), 0, mScale.X, 0, "\\enemy\\AttackSide\\enemyattack", 8, iPlayerFrameRate);
-            mRunSide = new AnimatedSprite(Game, new Vector2(), 0, mScale.X, 0, "\\enemy\\RunSide\\enemyrunside", 8, iPlayerFrameRate);
+            mAttackSide = new AnimatedSprite(Game, new Vector2(), 0, mScale.X/2, 0, "\\enemy\\AttackSide\\enemyattack", 8, iPlayerFrameRate);
+            mRunSide = new AnimatedSprite(Game, new Vector2(), 0, mScale.X/2, 0, "\\enemy\\RunSide\\enemyrunside", 8, iPlayerFrameRate);
 
 
         }
