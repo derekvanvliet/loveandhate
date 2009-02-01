@@ -134,21 +134,6 @@ namespace Love_and_Hate
 
 			Reset();
 
-            float fPlayerBoundingRadius = Config.Instance.GetAsInt("PlayerBoundingRadius");
-
-            if (fPlayerBoundingRadius == 0)
-                fPlayerBoundingRadius = this.mSpriteTexture.Width / 4;
-
-            this.mBounds =
-                new BoundingSphere
-                (
-                    new Vector3(this.mPosition.X, this.mPosition.Y, 0),
-                    fPlayerBoundingRadius
-                );
-           
-            mScale.X = mPixelScale * 32;
-            mScale.Y = mScale.X;
-
             int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
 
             switch (id)
@@ -285,6 +270,8 @@ namespace Love_and_Hate
                         //mScale.Y = mScale.X;
                         mPosition = pos;
                         mBounds.Radius = Radius;
+                        mBounds.Center.X = mPositionX;
+                        mBounds.Center.Y = mPositionY;
 
                         this.m_idleFrontAnim.Scale = mScale.X;
                         this.m_runAnim.Scale = mScale.X;
