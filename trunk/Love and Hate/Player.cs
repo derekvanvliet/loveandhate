@@ -374,8 +374,8 @@ namespace Love_and_Hate
                     if ( !IsMerged || !p.IsMerged )
                     {
                         // TODO - Remove for final game!
-                        //if (IsMergeButtonPressed() && p.IsMergeButtonPressed())
-                        //{
+                        if (IsMergeButtonPressed() && p.IsMergeButtonPressed())
+                        {
                             m_bIsMerged = true;
 
                             // Has a captain been selected?
@@ -393,7 +393,7 @@ namespace Love_and_Hate
                                 p.IsMerged = true;
                                 m_PlayerMerges[this.id].Add(p);                                
                             }
-                        //}//
+                        }
                     }
 
                     // Case 2 - I am merged with one or more players
