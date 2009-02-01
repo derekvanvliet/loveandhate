@@ -73,13 +73,22 @@ namespace Love_and_Hate
         }
 
         public override void Update(GameTime gameTime)
-        {                        
+        {
+            List<Enemy> destroy = new List<Enemy>();
+
             foreach (Enemy e in Program.Instance.mEnemies)
             {
+
                 if (CheckForCollision(e))
                 {                   
                     e.Destroy();
+                    destroy.Add(e);
                 }
+            }
+
+            foreach (Enemy e in destroy)
+            {
+                Program.Instance.mEnemies.Remove(e);
             }
 
             foreach (Player p in Program.Instance.GamePlayers)
