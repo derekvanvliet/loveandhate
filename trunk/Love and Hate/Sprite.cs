@@ -124,7 +124,6 @@ namespace Love_and_Hate
             mSpriteTexture = Game.Content.Load<Texture2D>(mAssetName);
             mPixelScale = 1.0f / mSpriteTexture.Width;
 
-
             base.LoadContent();
         }
 
