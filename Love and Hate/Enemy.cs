@@ -13,6 +13,7 @@ namespace Love_and_Hate
         private float mMaxSpeed = 0f;
         private float mChaseStrength = 1000;
         private float mAvoidStrength = 2000;
+        private float mMinHelpless = 0.5f;
         Vector2 mVelocity = new Vector2();
         Vector2 mTarget = new Vector2();
         public int mLevel = 0;
@@ -62,11 +63,13 @@ namespace Love_and_Hate
             Player largestPlayer = Program.Instance.GetLargestPlayer();
             Enemy largestEnemy = Program.Instance.GetLargestEnemy();
 
+            int helplessCount = GetHelplessEnemyCount();
+
             if (smallestEnemy == null)
             {
                 mScale.X = mPixelScale * random.Next((int)(smallestPlayer.PixelWidth * 0.5f), (int)(largestPlayer.PixelWidth * 2.0f));
             }
-            else if (smallestEnemy.PixelWidth > smallestPlayer.PixelWidth)
+            else if (helplessCount < Program.Instance.mEnemies.Count * mMinHelpless)
             {
                 mScale.X = mPixelScale * random.Next(16, (int)smallestPlayer.PixelWidth);
             }
@@ -326,6 +329,20 @@ namespace Love_and_Hate
             }
 
             return closest;
+        }
+
+        private int GetHelplessEnemyCount()
+        {
+            Player smallest = Program.Instance.GetSmallestPlayer();
+            int count = 0;
+            foreach (Enemy e in Program.Instance.mEnemies)
+            {
+                if (e.PixelWidth < smallest.PixelWidth)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         private void GetNewTarget()
