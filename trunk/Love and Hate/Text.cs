@@ -7,17 +7,19 @@ using System.Diagnostics;
 
 namespace Love_and_Hate
 {
-    class Text : DrawableGameComponent
+    public class Text : DrawableGameComponent
     {
         SpriteFont m_font;
         String     m_msg;
         Vector2    m_pos = new Vector2();
         bool m_addedToComponents = false;
+        SpriteBatch sb;
         
         public Text(Game game, String spriteFontFileName) : base(game)
         {
             try
             {
+                sb = new SpriteBatch(Game.GraphicsDevice);
                 m_font = Game.Content.Load<SpriteFont>(String.Format("fonts/{0}", spriteFontFileName));
             }
             catch (Exception ex)
@@ -43,8 +45,6 @@ namespace Love_and_Hate
         {
             try
             {
-                SpriteBatch sb = new SpriteBatch(Game.GraphicsDevice);
-
                 sb.Begin();
                 sb.DrawString(m_font, m_msg, m_pos, Color.White);
                 sb.End();

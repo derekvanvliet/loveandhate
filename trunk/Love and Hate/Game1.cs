@@ -34,6 +34,15 @@ namespace Love_and_Hate
         public int mGameStarted;
         public int mTimeLimit = Config.Instance.GetAsInt("TimeLimit") * 1000;
         public float mTimer;
+        public Text mTime;
+        public int mCurTime;
+        public RankFirstNum rnum1;
+        public RankSecondNum rnum2;
+        public RankThirdNum rnum3;
+        public RankP1 rp1;
+        public RankP2 rp2;
+        public RankP3 rp3;
+        public RankP4 rp4;
 
         public Game1()
         {
@@ -173,7 +182,22 @@ namespace Love_and_Hate
                     mGameState = GameState.Game;
 
                     mGameStarted = gameTime.TotalGameTime.Milliseconds;
+                    mTimer = 0;
+
+                    mTime = new Text(this, "Courier");
+                    UpdateTimeText();
                 }
+            }
+        }
+
+        protected void UpdateTimeText()
+        {
+            int newTime = (mTimeLimit - (int)mTimer) / 1000;
+            if (mCurTime != newTime)
+            {
+                mCurTime = newTime;
+
+                mTime.Print(640, 0, String.Format("{0}", newTime));
             }
         }
 
@@ -183,6 +207,8 @@ namespace Love_and_Hate
 
             if (mTimer < mTimeLimit)
             {
+                UpdateTimeText();
+
                 if (mEnemies.Count < mMaxEnemies)
                 {
                     mEnemies.Add(new Enemy(this, this.Content));
@@ -191,6 +217,86 @@ namespace Love_and_Hate
             else
             {
                 // game over
+                int width = Config.Instance.GetAsInt("ScreenWidth");
+                int height = Config.Instance.GetAsInt("ScreenHeight");
+
+                rnum1 = new RankFirstNum(this, this.Content);
+                rnum2 = new RankSecondNum(this, this.Content);
+                rnum3 = new RankThirdNum(this, this.Content);
+
+                rnum1.mPosition = new Vector2(width / 2 - 64, height / 2 - 64 - 32);
+                rnum2.mPosition = rnum1.mPosition + new Vector2(0, 128);
+                rnum3.mPosition = rnum2.mPosition + new Vector2(0, 128);
+
+                List<Player> lp = new List<Player>();
+                List<Player> sorted = new List<Player>();
+                List<Sprite> positions = new List<Sprite>();
+
+                positions.Add(rnum1);
+                positions.Add(rnum2);
+                positions.Add(rnum3);
+
+                foreach (Player p in GamePlayers)
+                {
+                    lp.Add(p);
+                }
+
+                while (lp.Count > 0)
+                {
+                    Player largest = null;
+
+                    foreach (Player p in lp)
+                    {
+                        if (largest == null)
+                        {
+                            largest = p;
+                        }
+                        else if (p.PixelWidth > largest.PixelWidth)
+                        {
+                            largest = p;
+                        }
+                    }
+
+                    sorted.Add(largest);
+                    lp.Remove(largest);
+                }
+                
+                for (int i = 0; i < sorted.Count; i++)
+                {
+                    Player p = sorted[i];
+                    switch (p.id)
+                    {
+                        case PlayerIndex.One:
+                            {
+                                rp1 = new RankP1(this, this.Content);
+                                rp1.mPositionX = positions[i].mPositionX + 128;
+                                rp1.mPositionY = positions[i].mPositionY;
+                                break;
+                            }
+                        case PlayerIndex.Two:
+                            {
+                                rp2 = new RankP2(this, this.Content);
+                                rp2.mPositionX = positions[i].mPositionX + 128;
+                                rp2.mPositionY = positions[i].mPositionY;
+                                break;
+                            }
+                        case PlayerIndex.Three:
+                            {
+                                rp3 = new RankP3(this, this.Content);
+                                rp3.mPositionX = positions[i].mPositionX + 128;
+                                rp3.mPositionY = positions[i].mPositionY;
+                                break;
+                            }
+                        case PlayerIndex.Four:
+                            {
+                                rp4 = new RankP4(this, this.Content);
+                                rp4.mPositionX = positions[i].mPositionX + 128;
+                                rp4.mPositionY = positions[i].mPositionY;
+                                break;
+                            }
+                    }
+                }
+
                 mGameState = GameState.GameOver;
             }
         }
