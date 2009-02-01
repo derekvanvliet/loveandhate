@@ -13,28 +13,79 @@ namespace Love_and_Hate
 
         private class PlayerMergeList
         {
-            List<Player> players = new List<Player>();
+            public List<Player> players = new List<Player>();
 
-            void Add(Player p)
+            public void Add(Player p)
             {
                 players.Add(p);
             }
 
-            bool Find(Player p)
+            public bool Find(Player p)
             {
                 if (players.Contains(p))
                     return true;
 
                 return false;
             }
+
+            public bool AreAllPlayersReadyToMerge()
+            {
+                foreach (Player p in players)
+                {
+                    if (!p.IsMergeButtonPressed())
+                        return false;
+                }
+
+                return true;
+            }
+
+            public bool IsAnyoneTryingToBreakTheMerge()
+            {
+                foreach (Player p in players)
+                {
+                    if ( p.IsMergeBreakButtonPressed() )
+                        return true;
+                }
+
+                return false;
+            }
+
         }
 
         // Merging properties
-        private static bool m_bCaptainOfMerge = false;
-        private static bool m_bIsMerged       = false;
+        private bool m_bIsMerged = false;
 
+        public bool IsMerged
+        {
+            get { return m_bIsMerged; }
+            set { m_bIsMerged = value; }
+        }
+
+        // Index on the dictionary is the merge captain
         private static Dictionary<PlayerIndex, PlayerMergeList> m_PlayerMerges = 
             new Dictionary<PlayerIndex, PlayerMergeList>();
+
+        private static bool IsThisPlayerCaptain(Player p)
+        {
+            if (m_PlayerMerges.ContainsKey(p.id))
+                return true;
+
+            return false;
+        }
+
+        private static void RemoveMergeList(PlayerIndex captain)
+        {
+            if ( m_PlayerMerges.ContainsKey(captain) )
+            {
+                foreach ( Player p in m_PlayerMerges[captain].players )
+                {
+                    p.IsMerged = false;
+                }
+
+                m_PlayerMerges[captain].players.Clear();
+                m_PlayerMerges.Remove(captain);
+            }
+        }
 
         private PlayerIndex m_id;
         
@@ -58,11 +109,51 @@ namespace Love_and_Hate
         {
             base.LoadContent();
 
-            Reset();
+			Reset();
+
+            float fPlayerBoundingRadius = Config.Instance.GetAsInt("PlayerBoundingRadius");
+
+            if (fPlayerBoundingRadius == 0)
+                fPlayerBoundingRadius = this.mSpriteTexture.Width / 4;
+
+            this.mBounds =
+                new BoundingSphere
+                (
+                    new Vector3(this.mPosition.X, this.mPosition.Y, 0),
+                    fPlayerBoundingRadius
+                );
+           
+            mScale.X = mPixelScale * 32;
+            mScale.Y = mScale.X;            
         }
 
         public override void Update(GameTime gameTime)
         {
+            if ( this.IsMerged  )
+            {
+                if (!Player.IsThisPlayerCaptain(this))
+                {
+                    base.Update(gameTime);
+                    return;
+                }
+                else
+                {
+                    if (m_PlayerMerges.ContainsKey(this.id))
+                    {
+                        // Check if someone is trying to break the merge which
+                        // anyone in the merge group is allowed to do
+                        if (m_PlayerMerges[this.id].IsAnyoneTryingToBreakTheMerge() || IsMergeBreakButtonPressed())
+                        {
+                            // If yes then this captain and its merge need to be removed from our 
+                            // merge list
+                            Player.RemoveMergeList(this.id);
+
+                            this.IsMerged = false;
+                        }
+                    }
+                }
+            }
+
             List<Enemy> destroy = new List<Enemy>();
 
             foreach (Enemy e in Program.Instance.mEnemies)
@@ -99,48 +190,83 @@ namespace Love_and_Hate
 
             foreach (Player p in Program.Instance.GamePlayers)
             {
+                // Don't bother checking if this player has collided with itself
+                //
+                if (p.id == this.id)
+                    continue;
+
                 if (CheckForCollision(p))
                 {
                     // Case 1 - I am not merged with any other players
-                 
-                        // Has a captain been selected?
-                            // If yes then add me to the list of merged players for this list
-                            // If no then make me the captain
-
-                    // Case 2 - I am merged with one or more players
-                        
-                        // Another player is trying to join the collective
-                        
-                        // All players in the collective will need to have their merge
-                        // buttons pressed as well as the new player wanting to join to add
-                        // the new player
-                            
-                        // If all players have their merge buttons pressed
-                            // If yes then add the new player to the merged player list   
-                        
-
+                    if (!IsMerged)
+                    {
                         //if (IsMergeButtonPressed() && p.IsMergeButtonPressed())
                         //{
-                        Trace.WriteLine("Wonder twin powers activate!");
+                            m_bIsMerged = true;
 
-                        //if (m_bIsMerged == false)
-                        //{
-                        //    m_bCaptainOfMerge = true;
-                        //    m_MergedPlayers.Add(p);
+                            // Has a captain been selected?
+                            // If yes then add me to the list of merged players for this list
+                            if (m_PlayerMerges.ContainsKey(this.id))
+                            {
+                                m_PlayerMerges[this.id].Add(p);
+                            }
+                            // If no then make me the captain
+                            else
+                            {
+                                m_PlayerMerges[this.id] = new PlayerMergeList();
+                                
+                                p.IsMerged = true;
+                                m_PlayerMerges[this.id].Add(p);
+                                
+                            }
                         //}
-                        //else
-                          //  return;
+                    }
 
-                        //p.IsMerged     = true;
-                        //m_MergedPlayers = p;
-                        //}
+                    // Case 2 - I am merged with one or more players
+                    else
+                    {
+                        // Another player is trying to join the collective.  Since all parties involved in the
+                        // collision will send a collision event only the captain should check if members
+                        // of its list have merge keys pressed.  To avoid doing too much processing.
+                        //
+                       if (Player.IsThisPlayerCaptain(this))
+                       {    
+                           // Checked if this player is already merged in with this captain.  If so
+                           // then don't bother checking if we should merge it.
+                           //
+                           if (!p.IsMerged)
+                           {
+                               //bool bAllPlayersReadyToMerge = false;
+                               //foreach (Player pMerged in Player.m_PlayerMerges[this.id].players)
+                               //{
+                                   // All players in the collective will need to have their merge
+                                   // buttons pressed as well as the new player wanting to join to add
+                                   // the new player
+
+                                   // If all players have their merge buttons pressed
+                                   // If yes then add the new player to the merged player list   
+                                   //if (!pMerged.IsMergeButtonPressed())
+                                   //{
+                                     //  bAllPlayersReadyToMerge = false;
+                                       //break;
+                                   //}
+                               //}
+
+                               // Check if all the players who are already merged and the new merged player have their keys
+                               // pressed to merge.  If they do then merge them!
+                               //
+                               if (Player.m_PlayerMerges[this.id].AreAllPlayersReadyToMerge() && p.IsMergeButtonPressed())
+                                   Player.m_PlayerMerges[this.id].Add(p);
+                           }
+                       }
+                    }
                 }
             }
 
             GamePadState state = GamePad.GetState(id);
 
             // Special handling for Player One
-            if (id == PlayerIndex.One)
+            if (id == PlayerIndex.Two)
             {
                 //if (!state.IsConnected)
                 //{
@@ -210,6 +336,31 @@ namespace Love_and_Hate
             return false;
         }
 
+        public bool IsMergeBreakButtonPressed()
+        {
+            String sMergeBtn = Config.Instance.GetAsString("PlayerBreakMergeBtn");
+
+            if (!String.IsNullOrEmpty(sMergeBtn))
+            {
+                if (sMergeBtn.Equals("a", StringComparison.InvariantCultureIgnoreCase))
+                    return IsButtonPressed(GamePad.GetState(this.id).Buttons.A);
+
+                else if (sMergeBtn.Equals("b", StringComparison.InvariantCultureIgnoreCase))
+                    return IsButtonPressed(GamePad.GetState(this.id).Buttons.B);
+
+                else if (sMergeBtn.Equals("x", StringComparison.InvariantCultureIgnoreCase))
+                    return IsButtonPressed(GamePad.GetState(this.id).Buttons.X);
+
+                else if (sMergeBtn.Equals("y", StringComparison.InvariantCultureIgnoreCase))
+                    return IsButtonPressed(GamePad.GetState(this.id).Buttons.Y);
+
+                Trace.WriteLine("Player::IsMergeButtonPressed - Merge button exists but not a valid x-box controll button");
+            }
+
+            Trace.WriteLine("Player::IsMergeButtonPressed - No player merge button detailed");
+            return false;            
+        }
+
         protected override void SetAssetName()
         {
             this.mAssetName = "dot_black";
@@ -217,17 +368,16 @@ namespace Love_and_Hate
             base.SetAssetName();
         }
 
-        public override void Initialize()
+ 		public override void Initialize()
         {
             mPositionX = Config.Instance.GetAsInt("ScreenWidth") * 0.5f;
             mPositionY = Config.Instance.GetAsInt("ScreenHeight") * 0.5f;
             base.Initialize();
         }
-
-        public void Damage()
+	
+ 		public void Damage()
         {
             mLevel = 1;
-
         }
 
         public void Reset()
