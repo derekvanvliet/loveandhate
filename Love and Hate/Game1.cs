@@ -49,7 +49,7 @@ namespace Love_and_Hate
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Config.Instance.GetAsInt("ScreenWidth");
             graphics.PreferredBackBufferHeight = Config.Instance.GetAsInt("ScreenHeight");
-            //graphics.IsFullScreen = true;
+            graphics.IsFullScreen = true;
 
             Content.RootDirectory = "Content";
         }
