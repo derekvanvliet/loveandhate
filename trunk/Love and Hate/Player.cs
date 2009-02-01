@@ -88,8 +88,11 @@ namespace Love_and_Hate
                         e.Destroy();
                         destroy.Add(e);
 
-                        mScale.X *= 1.10f;
+                        Vector2 pos = mPosition;
+
+                        mScale.X *= 1.05f;
                         mScale.Y = mScale.X;
+                        mPosition = pos;
                         mBounds.Radius = Radius;
                     }
                     else
