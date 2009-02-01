@@ -172,7 +172,7 @@ namespace Love_and_Hate
 
                         Vector2 pos = mPosition;
 
-                        mScale.X *= 1.05f;
+                        mScale.X *= 1.1f;
                         mScale.Y = mScale.X;
                         mPosition = pos;
                         mBounds.Radius = Radius;
@@ -304,7 +304,16 @@ namespace Love_and_Hate
                         // set position
                         mPositionX = mPosition.X + mls * mVelocity.X;
                         mPositionY = mPosition.Y + mls * mVelocity.Y;
-                        
+
+                        if (mPositionX + Radius > Config.Instance.GetAsInt("ScreenWidth"))
+                            mPositionX = Config.Instance.GetAsInt("ScreenWidth") - Radius;
+                        if (mPositionX - Radius < 0)
+                            mPositionX = Radius;
+                        if (mPositionY + Radius > Config.Instance.GetAsInt("ScreenHeight"))
+                            mPositionY = Config.Instance.GetAsInt("ScreenHeight") - Radius;
+                        if (mPositionY - Radius < 0)
+                            mPositionY = Radius;
+
                         base.Update(gameTime);
                         return;
                     }
@@ -332,6 +341,15 @@ namespace Love_and_Hate
             // set position
             mPositionX = mPosition.X + mls * mVelocity.X;
             mPositionY = mPosition.Y + mls * mVelocity.Y;
+
+            if (mPositionX + Radius > Config.Instance.GetAsInt("ScreenWidth"))
+                mPositionX = Config.Instance.GetAsInt("ScreenWidth") - Radius;
+            if (mPositionX - Radius < 0)
+                mPositionX = Radius;
+            if (mPositionY + Radius > Config.Instance.GetAsInt("ScreenHeight"))
+                mPositionY = Config.Instance.GetAsInt("ScreenHeight") - Radius;
+            if (mPositionY - Radius < 0)
+                mPositionY = Radius;
 
             base.Update(gameTime);
         }
