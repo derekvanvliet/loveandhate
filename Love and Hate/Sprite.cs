@@ -88,6 +88,10 @@ namespace Love_and_Hate
         {
             get { return PixelWidth * 0.5f; }
         }
+        public float InterestRadius
+        {
+            get { return Radius * 2; }
+        }
 
         public Sprite(Game game)
             : base(game)

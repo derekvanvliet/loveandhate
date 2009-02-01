@@ -15,6 +15,7 @@ namespace Love_and_Hate
         private float mChaseStrength = 1000;
         private float mAvoidStrength = 2000;
         Vector2 mVelocity = new Vector2();
+        Vector2 mTarget = new Vector2();
 
 
         public Enemy(Game game, ContentManager theContentManager) : base(game)
@@ -48,6 +49,8 @@ namespace Love_and_Hate
 
             mScale.X = mPixelScale * random.Next(16,128);
             mScale.Y = mScale.X;
+
+            GetNewTarget();
 
             mMaxSpeed = 192 - PixelWidth;
 
@@ -97,25 +100,44 @@ namespace Love_and_Hate
 
                 mVelocity = mVelocity + mls * (dir * mChaseStrength);
             }
+            else
+            {
+                // no prey, so take a leisurely walk
+                Vector2 dir = mTarget - mPosition;
+
+                if (dir.Length() > InterestRadius)
+                {
+                    dir.Normalize();
+
+                    mVelocity = mVelocity + mls * (dir * mChaseStrength);
+                }
+                else
+                {
+                    GetNewTarget();
+                }
+            }
 
             // move away from nearest predator
-            Vector2 avoidPos = GetNearestPredatorPosition();
+            LHPlayer predator = GetNearestPredator();
 
-            if (avoidPos != mPosition)
+            if (predator != null)
             {
-                Vector2 dir = mPosition - avoidPos;
-                dir.Normalize();
+                Vector2 dir = mPosition - predator.mPosition;
+                if (dir.Length() - Radius - predator.Radius < InterestRadius)
+                {
+                    dir.Normalize();
 
-                mVelocity = mVelocity + mls * (dir * mAvoidStrength);
+                    mVelocity = mVelocity + mls * (dir * mAvoidStrength);
+                }
             }
 
             // move away from nearest enemy
-            Enemy avoidEnemy = GetNearestEnemy();
+            Enemy enemy = GetNearestEnemy();
 
-            if (avoidEnemy != this)
+            if (enemy != this)
             {               
-                Vector2 dir = mPosition - avoidEnemy.mPosition;
-                if (dir.Length() - Radius - avoidEnemy.Radius < Radius * 2)
+                Vector2 dir = mPosition - enemy.mPosition;
+                if (dir.Length() - Radius - enemy.Radius < InterestRadius)
                 {
                     dir.Normalize();
 
@@ -171,9 +193,9 @@ namespace Love_and_Hate
             return closest;
         }
 
-        public Vector2 GetNearestPredatorPosition()
+        public LHPlayer GetNearestPredator()
         {
-            Vector2 closest = mPosition;
+            LHPlayer closest = null;
             float closestDistance = 0f;
 
             foreach (LHPlayer player in Program.Instance.GamePlayers)
@@ -182,7 +204,7 @@ namespace Love_and_Hate
                 {
                     if (closestDistance == 0)
                     {
-                        closest = player.mPosition;
+                        closest = player;
                         Vector2 distance = player.mPosition - mPosition;
                         closestDistance = distance.Length();
                     }
@@ -191,7 +213,7 @@ namespace Love_and_Hate
                         Vector2 distance = player.mPosition - mPosition;
                         if (distance.Length() < closestDistance)
                         {
-                            closest = player.mPosition;
+                            closest = player;
                             closestDistance = distance.Length();
                         }
                     }
@@ -228,6 +250,11 @@ namespace Love_and_Hate
             return closest;
         }
 
-
+        private void GetNewTarget()
+        {
+            Random random = new Random((int)DateTime.Now.Ticks);
+            mTarget.X = random.Next(0, Config.Instance.GetAsInt("ScreenWidth"));
+            mTarget.Y = random.Next(0, Config.Instance.GetAsInt("ScreenHeight"));
+        }
     }
 }
