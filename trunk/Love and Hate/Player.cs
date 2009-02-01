@@ -533,8 +533,7 @@ namespace Love_and_Hate
 
  		public override void Initialize()
         {
-            mPositionX = Config.Instance.GetAsInt("ScreenWidth") * 0.5f;
-            mPositionY = Config.Instance.GetAsInt("ScreenHeight") * 0.5f;
+            ResetPosition();
             base.Initialize();
         }
 	
@@ -572,6 +571,36 @@ namespace Love_and_Hate
                 mBounds.Center.Y = mPositionY;
 
                 mBounds.Radius = Radius;
+            }
+        }
+
+        public void ResetPosition()
+        {
+            int width = Config.Instance.GetAsInt("ScreenWidth");
+            int height = Config.Instance.GetAsInt("ScreenHeight");
+
+            switch (id)
+            {
+                case PlayerIndex.One:
+                    {
+                        mPosition = new Vector2(width * 0.5f * 0.5f, height * 0.5f * 0.5f);
+                        break;
+                    }
+                case PlayerIndex.Two:
+                    {
+                        mPosition = new Vector2(width * 0.5f + width * 0.5f * 0.5f, height * 0.5f * 0.5f);
+                        break;
+                    }
+                case PlayerIndex.Three:
+                    {
+                        mPosition = new Vector2(width * 0.5f * 0.5f, height * 0.5f + height * 0.5f * 0.5f);
+                        break;
+                    }
+                case PlayerIndex.Four:
+                    {
+                        mPosition = new Vector2(width * 0.5f + width * 0.5f * 0.5f, height * 0.5f + height * 0.5f * 0.5f);
+                        break;
+                    }
             }
         }
     }
