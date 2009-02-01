@@ -295,6 +295,10 @@ namespace Love_and_Hate
                                 break;
                             }
                     }
+                    if (i == 2)
+                    {
+                        break;
+                    }
                 }
 
                 mGameState = GameState.GameOver;
