@@ -31,6 +31,9 @@ namespace Love_and_Hate
         public int mMaxEnemies = Config.Instance.GetAsInt("MaxEnemies");
         public Background mBackground;
         public LoadingScreen mLoadingScreen;
+        public int mGameStarted;
+        public int mTimeLimit = Config.Instance.GetAsInt("TimeLimit") * 1000;
+        public float mTimer;
 
         public Game1()
         {
@@ -168,15 +171,27 @@ namespace Love_and_Hate
 
 
                     mGameState = GameState.Game;
+
+                    mGameStarted = gameTime.TotalGameTime.Milliseconds;
                 }
             }
         }
 
         protected void GameUpdate(GameTime gameTime)
         {
-            if (mEnemies.Count < mMaxEnemies)
+            mTimer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if (mTimer < mTimeLimit)
             {
-                mEnemies.Add(new Enemy(this, this.Content));
+                if (mEnemies.Count < mMaxEnemies)
+                {
+                    mEnemies.Add(new Enemy(this, this.Content));
+                }
+            }
+            else
+            {
+                // game over
+                mGameState = GameState.GameOver;
             }
         }
 
