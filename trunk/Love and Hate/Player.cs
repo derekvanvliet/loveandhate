@@ -421,8 +421,8 @@ namespace Love_and_Hate
 
             state.ThumbSticks.Left.Normalize();
 
-            this.mVelocity.X += mls * (state.ThumbSticks.Left.X*100);
-            this.mVelocity.Y += mls * (-state.ThumbSticks.Left.Y*100);
+            this.mVelocity.X += mls * (state.ThumbSticks.Left.X*1000);
+            this.mVelocity.Y += mls * (-state.ThumbSticks.Left.Y*1000);
 
             Vector2 drag2 = new Vector2(-mVelocity.X, -mVelocity.Y);
             if (drag2.Length() != 0)
