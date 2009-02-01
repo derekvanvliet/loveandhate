@@ -10,6 +10,8 @@ namespace Love_and_Hate
 {
     public class Player : Sprite
     {
+        public bool bInitialized = false;
+
         public enum ePlayerState
         {
             WALK = 0,
@@ -205,6 +207,11 @@ namespace Love_and_Hate
 
         public override void Update(GameTime gameTime)
         {
+            if (!bInitialized)
+            {
+                ResetPosition();
+                bInitialized = true;
+            }
             SetState();
 
             
@@ -543,7 +550,6 @@ namespace Love_and_Hate
 
  		public override void Initialize()
         {
-            ResetPosition();
             base.Initialize();
         }
 	
