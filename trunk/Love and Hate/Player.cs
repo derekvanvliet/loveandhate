@@ -132,7 +132,7 @@ namespace Love_and_Hate
         {
             base.LoadContent();
 
-			Reset();
+			Reset(32);
 
             int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
 
@@ -277,7 +277,7 @@ namespace Love_and_Hate
                         this.m_runAnim.Scale = mScale.X;
 
                         Program.Instance.mEnemiesKilled++;
-                        if (Program.Instance.mEnemiesKilled % 5 == 0)
+                        if (Program.Instance.mEnemiesKilled % 3 == 0)
                         {
                             if (Program.Instance.mMaxEnemies < 100)
                                 Program.Instance.mMaxEnemies++;
@@ -288,7 +288,7 @@ namespace Love_and_Hate
                         e.Destroy();
                         destroy.Add(e);
 
-                        Reset();
+                        Reset(32);
                     }
                 }
             }
@@ -552,9 +552,9 @@ namespace Love_and_Hate
             mLevel = 1;
         }
 
-        public void Reset()
+        public void Reset(int newPixelWidth)
         {
-            mScale.X = mPixelScale * 32;
+            mScale.X = mPixelScale * newPixelWidth;
             mScale.Y = mScale.X;
             if (m_idleFrontAnim != null)
             {
