@@ -1,4 +1,5 @@
 using System;
+using System.Windows;  
 
 namespace Love_and_Hate
 {
@@ -13,15 +14,41 @@ namespace Love_and_Hate
 
         static void Main(string[] args)
         {
-            using (mGame = new Game1())
+            try
             {
-                mGame.Run();
+                using (mGame = new Game1())
+                {
+                    System.Windows.Forms.MessageBox.Show("hi2");
+
+                    mGame.Run();
+                }
+            }
+            catch (Exception e)
+            {
+                ReportException(e);
             }
         }
 
         public static Game1 Instance
         {
             get { return mGame; }
+        }
+
+        static void ReportException(Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(
+                "Message: " + e.Message + "\n\n"
+                + "Source: " + e.Source + "\n\n"
+                + "Stack Trace: " + e.StackTrace + "\n\n"
+                + "Help Link: " + e.HelpLink + "\n\n"
+                + "Target Site Name: " + e.TargetSite.Name + "\n\n"
+                + "Exception: " + e.ToString()
+                );
+
+            if (e.InnerException != null)
+            {
+                ReportException(e.InnerException);
+            }
         }
 
     }
