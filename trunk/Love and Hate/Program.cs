@@ -18,8 +18,6 @@ namespace Love_and_Hate
             {
                 using (mGame = new Game1())
                 {
-                    System.Windows.Forms.MessageBox.Show("hi2");
-
                     mGame.Run();
                 }
             }
