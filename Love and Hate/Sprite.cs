@@ -59,7 +59,7 @@ namespace Love_and_Hate
         public float mPixelScale = 0f;
 
 
-        private Text mDebugText = null;
+      
 
         //The texture object used when drawing the sprite
         protected Texture2D mSpriteTexture;
@@ -107,7 +107,9 @@ namespace Love_and_Hate
             : base(game)
         {
             this.SetAssetName();
-            this.mDebugText = new Text(game, "Courier");
+
+            // TODO - Figure out why this causes sound to stop
+            //this.mDebugText = new Text(game, "Courier");
 
             Game.Components.Add(this);
         }
