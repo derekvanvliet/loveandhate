@@ -49,7 +49,7 @@ namespace Love_and_Hate
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Config.Instance.GetAsInt("ScreenWidth");
             graphics.PreferredBackBufferHeight = Config.Instance.GetAsInt("ScreenHeight");
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
 
             Content.RootDirectory = "Content";
         }
@@ -85,7 +85,8 @@ namespace Love_and_Hate
             // Create a new SpriteBatch, which can be used to draw textures.
             //spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // TODO: use this.Content to load your game content here          
+            AudioManager.Instance.Load(this.Content, "\\audio\\Love and Hate.xgs");
         }
 
         /// <summary>
@@ -96,6 +97,8 @@ namespace Love_and_Hate
         {
             // TODO: Unload any non ContentManager content here
         }
+
+        bool bIsMusicPlaying = false;
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -122,16 +125,24 @@ namespace Love_and_Hate
                 case GameState.Title:
                     this.TitleUpdate(gameTime);
                     break;
-                case GameState.Game:
+                case GameState.Game:                                       
                     this.GameUpdate(gameTime);
+
+                    if (!bIsMusicPlaying)
+                    {
+                        AudioManager.Instance.PlaySound("BackgroundMusic");
+                        bIsMusicPlaying = true;
+                    }
+
                     break;
                 case GameState.GameOver:
                     this.GameOverUpdate(gameTime);
                     break;
             }
 
-
             base.Update(gameTime);
+
+            AudioManager.Instance.Update();
         }
 
         /// <summary>

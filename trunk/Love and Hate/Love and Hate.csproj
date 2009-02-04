@@ -16,7 +16,7 @@
     <ManifestCertificateThumbprint>B8988ABFBFB3245D397163307305B59243F1EFFE</ManifestCertificateThumbprint>
     <ManifestKeyFile>Love and Hate_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>http://www.eatmygames.com/loveandhate/</PublishUrl>
     <Install>true</Install>
@@ -77,7 +77,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimatedSprite.cs" />
+    <Compile Include="AnimatedSpriteEx.cs" />
+    <Compile Include="AnimatedSpriteManager.cs" />
     <Compile Include="AudioCore.cs" />
+    <Compile Include="AudioManager.cs" />
     <Compile Include="Background.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="LoadingScreen.cs" />

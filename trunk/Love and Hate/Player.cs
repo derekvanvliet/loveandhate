@@ -459,6 +459,8 @@ namespace Love_and_Hate
                 {
                     if (e.PixelWidth < this.PixelWidth)
                     {
+                        AudioManager.Instance.PlaySound("MonsterDie");
+
                         e.Destroy();
                         destroy.Add(e);
 
