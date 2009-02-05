@@ -1,5 +1,5 @@
 using System;
-using System.Windows;  
+//using System.Windows;  
 
 namespace Love_and_Hate
 {
@@ -34,6 +34,7 @@ namespace Love_and_Hate
 
         static void ReportException(Exception e)
         {
+            /*
             System.Windows.Forms.MessageBox.Show(
                 "Message: " + e.Message + "\n\n"
                 + "Source: " + e.Source + "\n\n"
@@ -42,6 +43,7 @@ namespace Love_and_Hate
                 + "Target Site Name: " + e.TargetSite.Name + "\n\n"
                 + "Exception: " + e.ToString()
                 );
+             */
 
             if (e.InnerException != null)
             {
