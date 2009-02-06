@@ -87,6 +87,7 @@ namespace Love_and_Hate
 
             // TODO: use this.Content to load your game content here          
             AudioManager.Instance.Load(this.Content, "\\audio\\Love and Hate.xgs");
+            AnimatedSpriteManager.Instance.LoadContent(this.GraphicsDevice);            
         }
 
         /// <summary>
@@ -110,11 +111,6 @@ namespace Love_and_Hate
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
-            // Have two players collided?
-            // If yes
-              // Are the players' merge buttons pressed?
-                // If yes then merge
 
      		// TODO: Add your update logic here
             switch(mGameState)
@@ -143,6 +139,7 @@ namespace Love_and_Hate
             base.Update(gameTime);
 
             AudioManager.Instance.Update();
+            AnimatedSpriteManager.Instance.Update(gameTime);
         }
 
         /// <summary>

@@ -16,8 +16,8 @@ Global Settings
     Header File = Love and Hate.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3779709414;
-    Last Modified High = 29984366;
+    Last Modified Low = 29984366;
+    Last Modified High = 3779709414;
 
     Category
     {
@@ -229,6 +229,8 @@ Wave Bank
     Xbox Bank Last Modified High = 0;
     PC Bank Last Modified Low = 3779709414;
     PC Bank Last Modified High = 29984366;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 3329553164;
     Bank Last Revised High = 29984366;
 
@@ -355,8 +357,6 @@ Sound Bank
     Windows File = Win\Sound Bank.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 3782365664;
-    Bank Last Modified High = 29984366;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -562,6 +562,7 @@ Sound Bank
 
             Play Wave Event
             {
+                Loop Count = 255;
                 Break Loop = 0;
                 Use Speaker Position = 0;
                 Use Center Speaker = 1;

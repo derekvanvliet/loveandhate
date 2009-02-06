@@ -278,7 +278,9 @@ namespace Love_and_Hate
 
                         break;
                     }
-            }                
+            }
+
+            AnimatedSpriteManager.Instance.Draw(gameTime);
 
             base.Draw(gameTime);           
         }
@@ -460,6 +462,18 @@ namespace Love_and_Hate
                     if (e.PixelWidth < this.PixelWidth)
                     {
                         AudioManager.Instance.PlaySound("MonsterDie");
+
+                        AnimatedSpriteEx killAnim = new AnimatedSpriteEx(this.Game);
+
+
+                        killAnim.Position =
+                            new Vector2(e.mPosition.X - (this.PixelWidth / 2),
+                                        e.mPosition.Y - (this.PixelHeight / 2));
+
+                        //killAnim.Position = this.mPosition;                            
+                        killAnim.Load(this.Game.Content, new Vector2(0, 0), "\\kill anim\\Kill", 8, 20);
+
+                        AnimatedSpriteManager.Instance.Add(killAnim);
 
                         e.Destroy();
                         destroy.Add(e);
