@@ -8,7 +8,14 @@ namespace Love_and_Hate
 {
     public class AudioManager
     {
+        private ContentManager mContentMgr;
+        private bool mInitialized = false;
+
         private static AudioManager mInstance = new AudioManager();
+        private static Dictionary<String, SoundBank> mSounds = new Dictionary<string, SoundBank>();
+        private static Dictionary<String, WaveBank> mWaves = new Dictionary<string, WaveBank>();
+
+        static String SOUND_BANK_CONTENT = "\\audio\\Sound Bank.xsb";
 
         static public AudioManager Instance
         {
@@ -30,30 +37,20 @@ namespace Love_and_Hate
 
         }
 
-        private ContentManager mContentMgr;
-
         public void Load(ContentManager contentMgr, String asset)
         {
             mContentMgr = contentMgr;
             mAudioEngine = new AudioEngine(contentMgr.RootDirectory + asset);
         }
-
-        private bool mInitialized = false;
-
+        
         public void Update()
         {
             mAudioEngine.Update();
         }
 
-
-        static Dictionary<String, SoundBank> mSounds = new Dictionary<string, SoundBank>();
-        static Dictionary<String, WaveBank> mWaves = new Dictionary<string, WaveBank>();
-
-
         public void PlaySound(String cue)
         {
-            SoundBank sb = null;
-            String SOUND_BANK_CONTENT = "\\audio\\Sound Bank.xsb";
+            SoundBank sb = null;           
 
             if (mSounds.ContainsKey(SOUND_BANK_CONTENT))
                 sb = mSounds[SOUND_BANK_CONTENT];
@@ -72,6 +69,14 @@ namespace Love_and_Hate
             }
 
             sb.PlayCue(cue);
+        }
+
+        public bool IsSoundPlaying(String cue)
+        {
+            if (mSounds.ContainsKey(SOUND_BANK_CONTENT))
+                return mSounds[SOUND_BANK_CONTENT].GetCue(cue).IsStopped;
+
+            return false;
         }
 
         public void PlayMusic(String asset)

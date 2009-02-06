@@ -6,31 +6,40 @@ using Microsoft.Xna.Framework;
 
 namespace Love_and_Hate
 {
-    public class AnimatedSpriteManager : DrawableGameComponent
+    public class AnimatedSpriteManager //: DrawableGameComponent
     {
+        static AnimatedSpriteManager mInstance = new AnimatedSpriteManager();
         static SpriteBatch mSB;
         List<AnimatedSpriteEx> mSprites = new List<AnimatedSpriteEx>();
 
-        public AnimatedSpriteManager(Game game)
-            : base(game)
+        static public AnimatedSpriteManager Instance
         {
-
+            get
+            {
+                return mInstance;
+            }
         }
 
-        protected override void LoadContent()
+        public AnimatedSpriteManager()
+            //: base(game)
+        {
+            
+        }
+
+        public void LoadContent(GraphicsDevice gd)
         {
             if (mSB == null)
-                mSB = new SpriteBatch(this.GraphicsDevice);
+                mSB = new SpriteBatch(gd);
 
-            base.LoadContent();
+            //base.LoadContent();
         }
 
-        public override void Initialize()
+        public void Initialize()
         {
-            base.Initialize();
+            //base.Initialize();
         }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             if (mSB != null)
             {
@@ -38,10 +47,10 @@ namespace Love_and_Hate
                     s.Draw(mSB);
             }
 
-            base.Draw(gameTime);
+            //base.Draw(gameTime);
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             List<AnimatedSpriteEx> ItemsToRemove = new List<AnimatedSpriteEx>();
 
@@ -57,7 +66,7 @@ namespace Love_and_Hate
             foreach (AnimatedSpriteEx s in ItemsToRemove)
                 mSprites.Remove(s);
 
-            base.Update(gameTime);
+            //base.Update(gameTime);
         }
 
         public void Add(AnimatedSpriteEx sprite)
