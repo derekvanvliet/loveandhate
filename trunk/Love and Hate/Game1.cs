@@ -26,9 +26,9 @@ namespace Love_and_Hate
     {
         GraphicsDeviceManager graphics;
         private GameState mGameState;
-        public List<Enemy> mEnemies = new List<Enemy>();
+        public List<Enemy> mEnemies;
         public int mEnemiesKilled = 0;
-        public int mMaxEnemies = Config.Instance.GetAsInt("MaxEnemies");
+        public int mMaxEnemies = 0;
         public Background mBackground;
         public LoadingScreen mLoadingScreen;
         public int mGameStarted;
@@ -43,6 +43,8 @@ namespace Love_and_Hate
         public RankP2 rp2;
         public RankP3 rp3;
         public RankP4 rp4;
+        public PressA pressA;
+        private bool bRestart;
 
         public Game1()
         {
@@ -50,6 +52,14 @@ namespace Love_and_Hate
             graphics.PreferredBackBufferWidth = Config.Instance.GetAsInt("ScreenWidth");
             graphics.PreferredBackBufferHeight = Config.Instance.GetAsInt("ScreenHeight");
             graphics.IsFullScreen = false;
+
+            mEnemies = new List<Enemy>();
+
+            mMaxEnemies = Config.Instance.GetAsInt("MaxEnemies");
+
+            m_GamePlayers = new List<Player>();
+
+            bRestart = false;
 
             Content.RootDirectory = "Content";
         }
@@ -180,8 +190,8 @@ namespace Love_and_Hate
             if (bStartGame)
             {
                 mLoadingScreen.Destroy();
+                
                 mBackground = new Background(this, this.Content);
-                m_GamePlayers = new List<Player>();
 
                 // Player one will always be added regardless of whether a controller is connected or not
                 //
@@ -246,10 +256,12 @@ namespace Love_and_Hate
                 rnum1 = new RankFirstNum(this, this.Content);
                 rnum2 = new RankSecondNum(this, this.Content);
                 rnum3 = new RankThirdNum(this, this.Content);
+                pressA = new PressA(this, this.Content);
 
                 rnum1.mPosition = new Vector2(width / 2 - 64, height / 2 - 64 - 32);
                 rnum2.mPosition = rnum1.mPosition + new Vector2(0, 128);
                 rnum3.mPosition = rnum2.mPosition + new Vector2(0, 128);
+                pressA.mPosition = new Vector2(width - 128, 128);
 
                 List<Player> lp = new List<Player>();
                 List<Player> sorted = new List<Player>();
@@ -330,6 +342,74 @@ namespace Love_and_Hate
 
         protected void GameOverUpdate(GameTime gameTime)
         {
+            if (!bRestart)
+            {
+                if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+                {
+                    if (IsButtonPressed(GamePad.GetState(PlayerIndex.One).Buttons.A))
+                        bRestart = true;
+                }
+                else
+                {
+                    if (Keyboard.GetState().IsKeyDown(Keys.A))
+                        bRestart = true;
+                }
+            }
+            else
+            {
+                if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+                {
+                    if (!IsButtonPressed(GamePad.GetState(PlayerIndex.One).Buttons.A))
+                        Restart();
+                }
+                else
+                {
+                    if (!Keyboard.GetState().IsKeyDown(Keys.A))
+                        Restart();
+                }
+            }
+        }
+
+        public void Restart()
+        {
+            bRestart = false;
+            mBackground.Destroy();
+
+            foreach (Player p in m_GamePlayers)
+            {
+                p.Destroy();
+            }
+
+            m_GamePlayers = new List<Player>();
+
+            foreach (Enemy e in mEnemies)
+            {
+                e.Destroy();
+            }
+
+            mEnemies = new List<Enemy>();
+
+            mMaxEnemies = Config.Instance.GetAsInt("MaxEnemies");
+
+
+            if(rnum1 != null)
+                rnum1.Destroy();
+            if(rnum2 != null)
+                rnum2.Destroy();
+            if(rnum3 != null)
+                rnum3.Destroy();
+            if(rp1 != null)
+                rp1.Destroy();
+            if(rp2 != null)
+                rp2.Destroy();
+            if(rp3 != null)
+                rp3.Destroy();
+            if(rp4 != null)
+                rp4.Destroy();
+
+            mTime.Dispose();
+
+            mGameState = GameState.Init;
         }
 
         public Enemy GetSmallestEnemy()
