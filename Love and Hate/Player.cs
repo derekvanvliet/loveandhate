@@ -462,12 +462,10 @@ namespace Love_and_Hate
 
                         AnimatedSpriteEx killAnim = new AnimatedSpriteEx(this.Game);
 
-
                         killAnim.Position =
-                            new Vector2(e.mPosition.X - (this.PixelWidth / 2),
-                                        e.mPosition.Y - (this.PixelHeight / 2));
-
-                        //killAnim.Position = this.mPosition;                            
+                            new Vector2(e.mPosition.X - (e.PixelWidth * 2),
+                                        e.mPosition.Y - (e.PixelHeight * 2));
+                            
                         killAnim.Load(this.Game.Content, new Vector2(0, 0), "\\kill anim\\Kill", 8, 20);
 
                         AnimatedSpriteManager.Instance.Add(killAnim);
