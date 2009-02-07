@@ -163,38 +163,53 @@ namespace Love_and_Hate
 
         protected void TitleUpdate(GameTime gameTime)
         {
-            // if start game
+            bool bStartGame = false;
 
+            // if start game
             if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
             {
                 if (IsButtonPressed(GamePad.GetState(PlayerIndex.One).Buttons.A))
-                {
-                    mLoadingScreen.Destroy();
-                    mBackground = new Background(this, this.Content);
-                    m_GamePlayers = new List<Player>();
+                    bStartGame = true;
+            }
+            else
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                    bStartGame = true;
+            }
 
-                    // Player one will always be added regardless of whether a controller is connected or not
-                    //
-                    m_GamePlayers.Add(new Player(this, PlayerIndex.One));
+            if (bStartGame)
+            {
+                mLoadingScreen.Destroy();
+                mBackground = new Background(this, this.Content);
+                m_GamePlayers = new List<Player>();
 
-                    if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
-                        m_GamePlayers.Add(new Player(this, PlayerIndex.Two));
+                // Player one will always be added regardless of whether a controller is connected or not
+                //
+                if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+                    m_GamePlayers.Add(new Player(this, PlayerIndex.One, false));
 
-                    if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
-                        m_GamePlayers.Add(new Player(this, PlayerIndex.Three));
+                if (GamePad.GetCapabilities(PlayerIndex.Two).IsConnected)
+                    m_GamePlayers.Add(new Player(this, PlayerIndex.Two, false));
 
-                    if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
-                        m_GamePlayers.Add(new Player(this, PlayerIndex.Four));
+                if (GamePad.GetCapabilities(PlayerIndex.Three).IsConnected)
+                    m_GamePlayers.Add(new Player(this, PlayerIndex.Three, false));
 
+                if (GamePad.GetCapabilities(PlayerIndex.Four).IsConnected)
+                    m_GamePlayers.Add(new Player(this, PlayerIndex.Four, false));
 
-                    mGameState = GameState.Game;
+                if (m_GamePlayers.Count < 1)
+                    m_GamePlayers.Add(new Player(this, PlayerIndex.One, true));                            
 
-                    mGameStarted = gameTime.TotalGameTime.Milliseconds;
-                    mTimer = 0;
+                if (m_GamePlayers.Count == 1)
+                    m_GamePlayers.Add(new Player(this, PlayerIndex.Two, true));
 
-                    mTime = new Text(this, "Courier");
-                    UpdateTimeText();
-                }
+                mGameState = GameState.Game;
+
+                mGameStarted = gameTime.TotalGameTime.Milliseconds;
+                mTimer = 0;
+
+                mTime = new Text(this, "Courier");
+                UpdateTimeText();
             }
         }
 

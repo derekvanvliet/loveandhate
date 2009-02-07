@@ -12,6 +12,7 @@ namespace Love_and_Hate
     {
         public int mDefaultSize = 64;
         public bool bInitialized = false;
+        private bool mIsUsingKeyboard = false;
 
         public enum ePlayerState
         {
@@ -153,13 +154,9 @@ namespace Love_and_Hate
             set { m_id = value; }
         }
 
-        public Player(Game game) : base(game)
+        public Player(Game game, PlayerIndex id, bool bUsingKeyboard) : base(game)
         {
-            Trace.WriteLine("You're trying to instantiate a 'Player' class!  This is an abstract class.");
-        }
-
-        public Player(Game game, PlayerIndex id) : base(game)
-        {
+            this.mIsUsingKeyboard = bUsingKeyboard;
             this.m_id = id;
 
             int iPlayerFrameRate = Config.Instance.GetAsInt("PlayerFrameRate");
@@ -520,12 +517,11 @@ namespace Love_and_Hate
            
             GamePadState state = GamePad.GetState(id);
 
-            // Special handling for Player One
-            if (id == PlayerIndex.Two)
+            if (mIsUsingKeyboard)
             {
-                //if (!state.IsConnected)
-                //{
-                    if (Keyboard.GetState().GetPressedKeys().Length > 0)
+                if (Keyboard.GetState().GetPressedKeys().Length > 0)
+                {
+                    if (id == PlayerIndex.One)
                     {
                         this.moveY = Keyboard.GetState().IsKeyDown(Keys.W) ? -1 : 0;
                         this.moveX = Keyboard.GetState().IsKeyDown(Keys.D) ? 1 : 0;
@@ -535,40 +531,51 @@ namespace Love_and_Hate
 
                         if (moveY == 0)
                             moveY = Keyboard.GetState().IsKeyDown(Keys.S) ? 1 : 0;
-
-                        mVelocity.X += mls * (moveX * 1000);
-                        mVelocity.Y += mls * (moveY * 1000);
-
-                        Vector2 drag = new Vector2(-mVelocity.X, -mVelocity.Y);
-                        if (drag.Length() != 0)
-                        {
-                            drag.Normalize();
-                            mVelocity = mVelocity + mls * (drag * (mVelocity.Length()*2));
-                        }
-
-                        if (mVelocity.Length() > mMaxSpeed)
-                        {
-                            mVelocity.Normalize();
-                            mVelocity = mVelocity * mMaxSpeed;
-                        }
-
-                        // set position
-                        mPositionX = mPosition.X + mls * mVelocity.X;
-                        mPositionY = mPosition.Y + mls * mVelocity.Y;
-
-                        if (mPositionX + Radius > Config.Instance.GetAsInt("ScreenWidth"))
-                            mPositionX = Config.Instance.GetAsInt("ScreenWidth") - Radius;
-                        if (mPositionX - Radius < 0)
-                            mPositionX = Radius;
-                        if (mPositionY + Radius > Config.Instance.GetAsInt("ScreenHeight"))
-                            mPositionY = Config.Instance.GetAsInt("ScreenHeight") - Radius;
-                        if (mPositionY - Radius < 0)
-                            mPositionY = Radius;
-
-                        base.Update(gameTime);
-                        return;
                     }
-                //}
+                    else if (id == PlayerIndex.Two)
+                    {
+                        this.moveY = Keyboard.GetState().IsKeyDown(Keys.I) ? -1 : 0;
+                        this.moveX = Keyboard.GetState().IsKeyDown(Keys.L) ? 1 : 0;
+
+                        if (moveX == 0)
+                            moveX = Keyboard.GetState().IsKeyDown(Keys.J) ? -1 : 0;
+
+                        if (moveY == 0)
+                            moveY = Keyboard.GetState().IsKeyDown(Keys.K) ? 1 : 0;
+                    }
+
+                    mVelocity.X += mls * (moveX * 1000);
+                    mVelocity.Y += mls * (moveY * 1000);
+
+                    Vector2 drag = new Vector2(-mVelocity.X, -mVelocity.Y);
+                    if (drag.Length() != 0)
+                    {
+                        drag.Normalize();
+                        mVelocity = mVelocity + mls * (drag * (mVelocity.Length()*2));
+                    }
+
+                    if (mVelocity.Length() > mMaxSpeed)
+                    {
+                        mVelocity.Normalize();
+                        mVelocity = mVelocity * mMaxSpeed;
+                    }
+
+                    // set position
+                    mPositionX = mPosition.X + mls * mVelocity.X;
+                    mPositionY = mPosition.Y + mls * mVelocity.Y;
+
+                    if (mPositionX + Radius > Config.Instance.GetAsInt("ScreenWidth"))
+                        mPositionX = Config.Instance.GetAsInt("ScreenWidth") - Radius;
+                    if (mPositionX - Radius < 0)
+                        mPositionX = Radius;
+                    if (mPositionY + Radius > Config.Instance.GetAsInt("ScreenHeight"))
+                        mPositionY = Config.Instance.GetAsInt("ScreenHeight") - Radius;
+                    if (mPositionY - Radius < 0)
+                        mPositionY = Radius;
+
+                    base.Update(gameTime);
+                    return;
+                }
             }
 
             this.moveX = state.ThumbSticks.Left.X;
