@@ -24,7 +24,7 @@ namespace Love_and_Hate
             mProps.Add("MaxEnemies","10");
             mProps.Add("ScreenWidth","1280");
             mProps.Add("ScreenHeight","800");
-            mProps.Add("TimeLimit","5");        
+            mProps.Add("TimeLimit","90");        
         }
 
         public static Config Instance
