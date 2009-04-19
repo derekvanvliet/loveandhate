@@ -231,7 +231,8 @@ namespace Love_and_Hate
 
         }
 
-        public override void Draw(GameTime gameTime)
+        //public override void Draw(GameTime gameTime)
+        public override void DrawSprite(GameTime gameTime)
         {
             if (IsMerged && !Player.IsThisPlayerCaptain(this) )
                 return;
@@ -279,7 +280,7 @@ namespace Love_and_Hate
 
             AnimatedSpriteManager.Instance.Draw(gameTime);
 
-            base.Draw(gameTime);           
+            base.DrawSprite(gameTime);           
         }
 
         public void SetState()
@@ -482,9 +483,11 @@ namespace Love_and_Hate
                         //mScale.X *= 1.1f;
                         //mScale.Y = mScale.X;
                         mPosition = pos;
-                        mBounds.Radius = Radius;
-                        mBounds.Center.X = mPositionX;
-                        mBounds.Center.Y = mPositionY;
+                        //mBounds.Radius = Radius;
+                        //mBounds.Center.X = mPositionX;
+                        //mBounds.Center.Y = mPositionY;                        
+                        this.SetBboxPos(mPosition);
+
 
                         this.m_idleFrontAnim.Scale = mScale.X;
                         this.m_runAnim.Scale = mScale.X;
@@ -716,24 +719,28 @@ namespace Love_and_Hate
             }
             mMaxSpeed = 10000f / PixelWidth;
 
-            float fPlayerBoundingRadius = this.Radius;
+            //float fPlayerBoundingRadius = this.Radius;
 
-            if (this.mBounds == null)
-            {
-                this.mBounds =
-                    new BoundingSphere
-                    (
-                        new Vector3(this.mPosition.X, this.mPosition.Y, 0),
-                        fPlayerBoundingRadius
-                    );
-            }
-            else
-            {
-                mBounds.Center.X = mPositionX;
-                mBounds.Center.Y = mPositionY;
+            this.SetBboxPos(this.mPosition);
 
-                mBounds.Radius = Radius;
-            }
+            //if (this.mBounds == null)
+            //{
+            //    //this.mBounds =
+            //      //  new BoundingSphere
+            //        //(
+            //          //  new Vector3(this.mPosition.X, this.mPosition.Y, 0),
+            //            //fPlayerBoundingRadius
+            //        //);
+
+            //    this.SetBboxPos(this.mPosition);
+            //}
+            //else
+            //{
+            //    mBounds.Center.X = mPositionX;
+            //    mBounds.Center.Y = mPositionY;
+
+            //    mBounds.Radius = Radius;
+            //}
         }
 
         public void ResetPosition()

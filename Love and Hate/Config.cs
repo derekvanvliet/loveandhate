@@ -24,7 +24,8 @@ namespace Love_and_Hate
             mProps.Add("MaxEnemies","10");
             mProps.Add("ScreenWidth","1280");
             mProps.Add("ScreenHeight","800");
-            mProps.Add("TimeLimit","90");        
+            mProps.Add("TimeLimit","60");
+            mProps.Add("Debug", "false");    
         }
 
         public static Config Instance
@@ -48,6 +49,14 @@ namespace Love_and_Hate
         {
             String val = GetAsString(value);
             return System.Convert.ToDouble(val);
+        }
+
+        public bool DebugMode()
+        {
+            if (GetAsString("Debug").Equals("true"))
+                return true;
+
+            return false;
         }
     }
 }
