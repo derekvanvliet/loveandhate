@@ -109,7 +109,7 @@ namespace Love_and_Hate
             // TODO: Unload any non ContentManager content here
         }
 
-        bool bIsMusicPlaying = false;
+        //bool bIsMusicPlaying = false;
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -128,19 +128,15 @@ namespace Love_and_Hate
                 case GameState.Init:
                     this.InitUpdate(gameTime);
                     break;
+
                 case GameState.Title:
                     this.TitleUpdate(gameTime);
                     break;
+
                 case GameState.Game:                                       
                     this.GameUpdate(gameTime);
-
-                    if (!bIsMusicPlaying)
-                    {
-                        AudioManager.Instance.PlaySound("BackgroundMusic");
-                        bIsMusicPlaying = true;
-                    }
-
                     break;
+
                 case GameState.GameOver:
                     this.GameOverUpdate(gameTime);
                     break;
@@ -168,11 +164,11 @@ namespace Love_and_Hate
             {
                 mBackground.DrawSprite(gameTime);
 
-                foreach (Enemy e in mEnemies)
-                    e.DrawSprite(gameTime);
-
                 foreach (Player p in m_GamePlayers)
                     p.DrawSprite(gameTime);
+
+                foreach (Enemy e in mEnemies)
+                    e.DrawSprite(gameTime);
 
                 if (this.mGameState == GameState.GameOver)
                 {
@@ -226,6 +222,8 @@ namespace Love_and_Hate
             {
                 mLoadingScreen.Destroy();
                 
+                AudioManager.Instance.PlaySound("BackgroundMusic");
+
                 mBackground = new Background(this, this.Content);
 
                 // Player one will always be added regardless of whether a controller is connected or not
@@ -365,16 +363,13 @@ namespace Love_and_Hate
                                 break;
                             }
                     }
-                    if (i == 2)
-                    {
-                        break;
-                    }
                 }
 
                 mGameState = GameState.GameOver;
             }
 
-            mEnemies.Sort(new DepthComparer());
+            mEnemies.Sort(DepthCompare);
+            m_GamePlayers.Sort(DepthCompare);
         }
 
         protected void GameOverUpdate(GameTime gameTime)
@@ -523,12 +518,24 @@ namespace Love_and_Hate
 
             return largest;
         }
+
         bool IsButtonPressed(ButtonState btn)
         {
             if (btn == ButtonState.Pressed)
                 return true;
 
             return false;
+        }
+
+        static int DepthCompare(Sprite s1, Sprite s2)
+        {
+            if (s1.mPositionY > s2.mPositionY)
+                return 1;
+
+            else if (s1.mPositionY < s2.mPositionY)
+                return -1;
+
+            return 0;
         }
     }
 }
