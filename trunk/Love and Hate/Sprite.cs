@@ -55,12 +55,13 @@ namespace Love_and_Hate
         private SpriteBatch mSpriteBatch;
         public string mAssetName;
 
-        protected BoundingSphere mBounds;
+        protected BoundingBox mBounds;
+        private Texture2D mBboxTex;
+
         public float mPixelScale = 0f;
 
 
       
-
         //The texture object used when drawing the sprite
         protected Texture2D mSpriteTexture;
 
@@ -126,17 +127,47 @@ namespace Love_and_Hate
             mSpriteTexture = Game.Content.Load<Texture2D>(mAssetName);
             mPixelScale = 1.0f / mSpriteTexture.Width;
 
+            mBboxTex = Game.Content.Load<Texture2D>("bbox");
+
             base.LoadContent();
         }
 
         //Draw the sprite to the screen
-        public override void Draw(GameTime gameTime)
+        //public override void Draw(GameTime gameTime)
+        //{
+        //    if ( this.GetType().ToString().Equals("Enemy") )
+        //        return;
+
+        //    mSpriteBatch.Begin();
+
+        //    mSpriteBatch.Draw(mSpriteTexture, mPos, null, Color.White, mRotation, Vector2.Zero, mScale, SpriteEffects.None, 0f);
+        //    mSpriteBatch.End();
+
+        //    base.Draw(gameTime);
+        //}
+
+
+        public virtual void DrawSprite(GameTime gameTime)
         {
             mSpriteBatch.Begin();
+
+            if (Config.Instance.DebugMode())
+            {
+                float bboxWidth = mBounds.Max.X - mBounds.Min.X;
+                float bboxHeight = mBounds.Max.Y - mBounds.Min.Y;
+
+                mSpriteBatch.Draw
+                (
+                    mBboxTex,
+                    new Rectangle((int)mBounds.Min.X, (int)mBounds.Min.Y, (int)bboxWidth, (int)bboxHeight),
+                    new Color(255, 255, 255)
+                );
+            }
+
             mSpriteBatch.Draw(mSpriteTexture, mPos, null, Color.White, mRotation, Vector2.Zero, mScale, SpriteEffects.None, 0f);
             mSpriteBatch.End();
 
-            base.Draw(gameTime);
+            //base.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
@@ -150,21 +181,26 @@ namespace Love_and_Hate
         {
         }
 
-        public BoundingSphere Bounds
+        public BoundingBox Bounds
         {
             get { return this.mBounds; }
         }
 
         public void SetBboxPos(Vector2 pos)
         {
-            this.mBounds.Center.X = pos.X;
-            this.mBounds.Center.Y = pos.Y;
+            float x = pos.X - (this.PixelWidth / 2);
+            float y = pos.Y - (this.PixelHeight / 2);
+
+            float width  = this.PixelWidth  * 0.80f;
+            float height = this.PixelHeight * 0.90f;
+
+            this.mBounds.Min = new Vector3(x + (this.PixelWidth * 0.2f), y + (this.PixelHeight * 0.3f), -1);
+            this.mBounds.Max = new Vector3(x + width, y + height, -1);
         }
 
         public void Destroy()
         {
             Game.Components.Remove(this);
-
         }
     }
 }

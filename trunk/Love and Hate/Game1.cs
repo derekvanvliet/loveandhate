@@ -160,7 +160,42 @@ namespace Love_and_Hate
         {
             graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            if (mGameState == GameState.Title)
+            {            
+                mLoadingScreen.DrawSprite(gameTime);
+            }    
+            else if (this.mGameState == GameState.GameOver || this.mGameState == GameState.Game)
+            {
+                mBackground.DrawSprite(gameTime);
+
+                foreach (Enemy e in mEnemies)
+                    e.DrawSprite(gameTime);
+
+                foreach (Player p in m_GamePlayers)
+                    p.DrawSprite(gameTime);
+
+                if (this.mGameState == GameState.GameOver)
+                {
+                    rnum1.DrawSprite(gameTime);
+                    rnum2.DrawSprite(gameTime);
+                    rnum3.DrawSprite(gameTime);
+
+                    if (rp1 != null)
+                        rp1.DrawSprite(gameTime);
+
+                    if (rp2 != null)
+                        rp2.DrawSprite(gameTime);
+
+                    if (rp3 != null)
+                        rp3.DrawSprite(gameTime);
+
+                    if (rp4 != null)
+                        rp4.DrawSprite(gameTime);
+
+                    pressA.DrawSprite(gameTime);
+                }
+            }
+
 
             base.Draw(gameTime);
         }
@@ -338,6 +373,8 @@ namespace Love_and_Hate
 
                 mGameState = GameState.GameOver;
             }
+
+            mEnemies.Sort(new DepthComparer());
         }
 
         protected void GameOverUpdate(GameTime gameTime)
@@ -493,6 +530,5 @@ namespace Love_and_Hate
 
             return false;
         }
-
     }
 }

@@ -84,12 +84,15 @@ namespace Love_and_Hate
 
             mScale.Y = mScale.X;
 
-            this.mBounds =
-                new BoundingSphere
-                (
-                    new Vector3(this.mPosition.X, this.mPosition.Y, 0),
-                    this.Radius
-                );
+            //this.mBounds =
+
+
+              //  new BoundingSphere
+                //(
+                  //  new Vector3(this.mPosition.X, this.mPosition.Y, 0),
+//                    this.Radius
+                //);
+            this.SetBboxPos(this.mPosition);
             
             GetNewTarget();
 
@@ -131,7 +134,7 @@ namespace Love_and_Hate
 
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void DrawSprite(GameTime gameTime)
         {
             if (EnemyState == eEnemyState.RUN)
             {
@@ -155,7 +158,7 @@ namespace Love_and_Hate
                 else
                     this.mAttackSide.Draw(gameTime, this.mPosition - Vector2.One * Radius, SpriteEffects.None);
             }
-            base.Draw(gameTime);
+            base.DrawSprite(gameTime);
         }
 
         public override void Update(GameTime gameTime)
