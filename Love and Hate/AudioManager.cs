@@ -71,10 +71,16 @@ namespace Love_and_Hate
             sb.PlayCue(cue);
         }
 
+        public void StopSound(String cue)
+        {
+            if (mSounds.ContainsKey(SOUND_BANK_CONTENT))
+                mSounds[SOUND_BANK_CONTENT].GetCue(cue).Stop(AudioStopOptions.AsAuthored);
+        }
+
         public bool IsSoundPlaying(String cue)
         {
             if (mSounds.ContainsKey(SOUND_BANK_CONTENT))
-                return mSounds[SOUND_BANK_CONTENT].GetCue(cue).IsStopped;
+                return mSounds[SOUND_BANK_CONTENT].GetCue(cue).IsPlaying;
 
             return false;
         }
