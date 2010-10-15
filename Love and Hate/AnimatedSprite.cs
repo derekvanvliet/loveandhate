@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System.IO;
 
-// Take from http://msdn.microsoft.com/en-us/library/bb203866.aspx
+// Take from http://msdn.microsoft.com/en-us/library/bb203866.aspx 
 //
 
 namespace Love_and_Hate
